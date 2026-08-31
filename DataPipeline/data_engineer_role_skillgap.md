@@ -47,6 +47,27 @@ The whole project depends on good input data. If the job postings aren't cleaned
 
 ---
 
+## Important additions (do these regardless of time pressure)
+
+These aren't optional extras — skipping them means the pipeline either breaks silently or produces output nobody else can use.
+
+### 1. Build the actual skills dictionary
+Day 2 mentions "keyword matching against a predefined skills list" — that list itself is the most important artifact you'll produce, because the whole extraction step depends on it. Don't leave it vague:
+- Draft an initial version: ~30–50 keywords per domain (e.g. DevOps, Data, Embedded Systems).
+- Get quick feedback from whoever is building the forecasting model — they need to trust this list, since bad keywords = bad forecasts downstream.
+- Keep it in its own file (e.g. `skills_dictionary.json`) so it's easy to update without touching the pipeline code.
+
+### 2. Add simple logging to the pipeline
+A couple of printed lines each run: how many rows were cleaned, how many were dropped, how many postings ended up with zero extracted skills. This isn't complex — it just needs to exist. It catches bugs immediately and shows the pipeline is behaving as expected.
+
+### 3. Create a small test dataset before real data is ready
+Write 3–5 fake job postings by hand and run `clean.py` / `quality_check.py` against them from day one. Don't wait on Day 1's real data collection to test Day 2's code — building the test set in parallel saves rework on Day 3.
+
+### 4. Confirm the output format with the ML teammate early
+Before finalizing `extracted_skills.csv`, check how the forecasting model actually expects skills per job — a list column, one-hot encoded columns, or something else. Confirming this early avoids reshaping the output under time pressure on the last day.
+
+---
+
 ## Simple data schema (for reference)
 
 **raw_jobs.csv**
