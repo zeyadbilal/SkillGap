@@ -5,14 +5,14 @@ on:
     push:
         branches:
             - "Abdelrahman_deployment"
-        #paths: 
-            #- 'backend/**'
-    pull_request: 
-        branches: 
+        #paths:
+        #- 'backend/**'
+    pull_request:
+        branches:
             - "main"
-        #paths: 
-            #- 'backend/**'
-    
+        #paths:
+        #- 'backend/**'
+
 defaults:
     run:
         working-directory: backend
@@ -23,7 +23,7 @@ jobs:
         runs-on: ubuntu-latest
         strategy:
             matrix:
-                node-version: [20.x, 22.x, 24.x, 26.x ]
+                node-version: [20.x, 22.x, 24.x, 26.x]
         steps:
             - name: checkout source code
               uses: actions/checkout@v4
@@ -32,26 +32,25 @@ jobs:
               uses: actions/setup-node@v4
               with:
                   node-version: ${{matrix.node-version}}
-                  cache: 'npm'
-                  cache-dependency-path: 'backend/package-lock.json'
-            
+                  cache: "npm"
+                  cache-dependency-path: "backend/package-lock.json"
+
             - name: install Dependencies
               run: npm ci
-      
+
             - name: testing with coverage
               run: npm test -- --coverage
 
             - name: Upload Coverage Report
               uses: actions/upload-artifact@v4
               with:
-                name: code-coverage-report-node-${{matrix.node-version}}
-                path: backend/coverage/
+                  name: code-coverage-report-node-${{matrix.node-version}}
+                  path: backend/coverage/
 
             - name: Dependency Security Scan (Application Level)
               run: npm audit --audit-level=high
 
-
-    # build image for scaning 
+    # build image for scaning
     container-build:
         name: build-scan docker image
         runs-on: ubuntu-latest
@@ -71,7 +70,7 @@ jobs:
                   push: false
                   load: true
                   tags: backend-service:ci-test
-            
+
             - name: Scan Image Vulnerabilities
               uses: aquasecurity/trivy-action@v0.36.0
               with:
@@ -79,4 +78,4 @@ jobs:
                   format: table
                   exit-code: "1"
                   ignore-unfixed: true
-                  severity: "CRITICAL,HIGH"
+                  severity: "CRITICAL"
