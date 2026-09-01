@@ -28,16 +28,12 @@ jobs:
             - name: checkout source code
               uses: actions/checkout@v4
 
-            - name: debug 
-              run: |
-                  pwd
-                  ls
             - name: setup node-v${{matrix.node-version}}
               uses: actions/setup-node@v4
               with:
                   node-version: ${{matrix.node-version}}
                   cache: 'npm'
-                  cashe-dependency-path: backend/package-lock.json
+                  cache-dependency-path: 'backend/package-lock.json'
             
             - name: install Dependencies
               run: npm ci
