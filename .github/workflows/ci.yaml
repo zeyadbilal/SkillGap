@@ -33,6 +33,7 @@ jobs:
               with:
                   node-version: ${{matrix.node-version}}
                   cache: 'npm'
+                  cashe-dependency-path: backend/package-lock.json
             
             - name: install Dependencies
               run: npm ci
