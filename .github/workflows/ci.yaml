@@ -4,7 +4,7 @@ on:
     workflow_dispatch:
     push:
         branches:
-            - "main"
+            - "Abdelrahman_deployment"
         #paths: 
             #- 'backend/**'
     pull_request: 
