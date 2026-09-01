@@ -40,4 +40,4 @@ jobs:
               run: npm test
 
             - name: Dependency Security Scan (Application Level)
-              run: npm audit --audit-level=high
+              run: npm audit --audit-level=high 
