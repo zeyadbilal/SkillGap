@@ -2,7 +2,6 @@ FROM node:24-alpine
 
 # for solve security Vulnerabilities 
 RUN apk update && apk upgrade --no-cache 
-RUN npm install -g npm@latest
 
 ARG DEFAULT_PORT=5000
 
