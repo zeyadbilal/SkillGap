@@ -1,17 +1,16 @@
 name: backend-ci
 
 on:
-    workflow_dispatch:
     push:
         branches:
-            - "Abdelrahman_deployment"
-        #paths:
-        #- 'backend/**'
+            - "main"
+        paths:
+        - 'backend/**'
     pull_request:
         branches:
             - "main"
-        #paths:
-        #- 'backend/**'
+        paths:
+        - 'backend/**'
 
 defaults:
     run:

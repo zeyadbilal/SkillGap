@@ -28,4 +28,5 @@ ARG DEFAULT_PORT=5000
 ENV PORT=$DEFAULT_PORT
 EXPOSE $PORT
 
-CMD ["node", "src/app.js"]
+# run node with pid 1 to solve SIGTERM
+CMD ["node", "src/app.js"] 
