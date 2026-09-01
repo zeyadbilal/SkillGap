@@ -1,5 +1,8 @@
 FROM node:20-alpine
 
+# for solve security Vulnerabilities 
+RUN apk update && apk upgrade --no-cache 
+
 ARG DEFAULT_PORT=5000
 
 WORKDIR /app
