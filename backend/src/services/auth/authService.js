@@ -6,6 +6,7 @@ const userStore = require('./userStore');
 
 const revokedRefreshTokens = new Set();
 
+// Convert user object to public data (hide sensitive fields)
 const toPublicUser = (user) => ({
   id: user.id,
   email: user.email,
@@ -14,6 +15,7 @@ const toPublicUser = (user) => ({
   graduationYear: user.graduationYear,
 });
 
+// Generate access and refresh tokens for a user
 const generateTokens = (user) => {
   const payload = { sub: user.id, email: user.email };
   return {
@@ -22,6 +24,7 @@ const generateTokens = (user) => {
   };
 };
 
+// New user signup: check email doesn't exist, hash password, create user
 const register = async ({ email, password, fullName, fieldOfStudy, graduationYear }) => {
   const existing = userStore.findByEmail(email);
   if (existing) {
@@ -48,6 +51,7 @@ const register = async ({ email, password, fullName, fieldOfStudy, graduationYea
   return { user: toPublicUser(saved), tokens };
 };
 
+// User login: find user by email, verify password
 const login = async ({ email, password }) => {
   const user = userStore.findByEmail(email);
   if (!user) {
@@ -69,6 +73,7 @@ const login = async ({ email, password }) => {
   return { user: toPublicUser(user), tokens };
 };
 
+// Use refresh token to get new access token
 const refresh = async (refreshToken) => {
   if (revokedRefreshTokens.has(refreshToken)) {
     const error = new Error('Invalid or expired refresh token');
