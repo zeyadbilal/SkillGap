@@ -9,6 +9,8 @@ dotenv.config();
 const routes = require("./routes");
 const errorHandler = require("./middleware/errorHandler");
 const config = require("./config");
+const { sequelize } = require("./config/database");
+require("./models");
 
 const app = express();
 
@@ -31,8 +33,14 @@ app.use(errorHandler);
 
 const PORT = config.port;
 if (require.main === module) {
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+  (async () => {
+    await sequelize.sync({ alter: true });
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  })().catch((err) => {
+    console.error('Failed to start server:', err.message);
+    process.exit(1);
   });
 }
 
