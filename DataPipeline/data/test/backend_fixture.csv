@@ -1,0 +1,5 @@
+job_title,company,description_text,source,date_collected,track
+Backend Developer,Acme,"<p>Build REST API services with Python, Django, PostgreSQL, Docker and Git.</p>",manual_upload,2026-09-01,Backend Development
+Backend Developer,Acme,"<p>Build REST API services with Python, Django, PostgreSQL, Docker and Git.</p>",manual_upload,2026-09-01,Backend Development
+Node.js Engineer,Orbit,"Create Node.js and Express microservices with MongoDB and Redis.",manual_upload,2026-08-31,Backend Development
+Platform Developer,Northstar,"Maintain Java Spring Boot services, Kafka messaging, and Kubernetes deployments.",manual_upload,2026-08-30,Backend Development
