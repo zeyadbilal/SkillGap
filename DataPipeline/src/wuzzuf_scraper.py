@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import html
 import time
 import urllib.error
 import re
@@ -102,7 +103,7 @@ def _next_page(page_html: str, current_page: int, track: str) -> str | None:
     return f"https://wuzzuf.net/search/jobs/?{query}"
 
 
-def _detail_fields(page_html: str) -> tuple[str, str, str, datetime | None]:
+def _detail_fields(page_html: str) -> tuple[str, str, str, str, datetime | None]:
     def meta(name: str) -> str:
         match = re.search(rf'(?is)<meta[^>]+(?:name|property)=["\']{re.escape(name)}["\'][^>]+content=["\'](.*?)["\']', page_html)
         return re.sub(r"\s+", " ", match.group(1)).strip() if match else ""
@@ -120,7 +121,36 @@ def _detail_fields(page_html: str) -> tuple[str, str, str, datetime | None]:
         posted = None
     json_description = re.search(r'"description"\s*:\s*"(.*?)"', page_html, re.IGNORECASE)
     description = description or (json_description.group(1) if json_description else "")
-    return title, re.sub(r"<[^>]+>", " ", description), posted_value, posted
+
+    # Wuzzuf job pages carry a schema.org JobPosting JSON-LD block for SEO;
+    # hiringOrganization.name is the one reliable source for the employer name
+    # (there's no dedicated og:/twitter: meta tag for it).
+    company_match = re.search(r'"hiringOrganization"\s*:\s*\{[^{}]*?"name"\s*:\s*"([^"]+)"', page_html, re.IGNORECASE)
+    company = html.unescape(company_match.group(1)).strip() if company_match else ""
+
+    return title, company, re.sub(r"<[^>]+>", " ", description), posted_value, posted
+
+
+def _is_challenge_title(page_title: str) -> bool:
+    lowered = page_title.casefold()
+    return any(term in lowered for term in ("just a moment", "verify", "captcha"))
+
+
+def _wait_out_challenge(page, label: str, max_wait_ms: int = 120_000, poll_ms: int = 3_000) -> bool:
+    """Poll the page title until the Cloudflare-style challenge clears or
+    max_wait_ms elapses. Returns True once resolved, False on timeout -- a
+    blind fixed sleep either wastes time once the human clears it early, or
+    isn't long enough, so this checks every poll_ms instead."""
+    print(f"[scrape] {label}: complete the Wuzzuf browser check in the visible window (waiting up to {max_wait_ms // 1000}s)")
+    waited = 0
+    while waited < max_wait_ms:
+        page.wait_for_timeout(poll_ms)
+        waited += poll_ms
+        if not _is_challenge_title(page.title()):
+            print(f"[scrape] {label}: challenge cleared after {waited // 1000}s")
+            return True
+    print(f"[scrape] {label}: challenge still showing after {max_wait_ms // 1000}s, giving up on this page")
+    return False
 
 
 def scrape_wuzzuf(track: str, days_back: int = 2, timeout: int = 20) -> list[dict[str, str]]:
@@ -156,9 +186,8 @@ def scrape_wuzzuf(track: str, days_back: int = 2, timeout: int = 20) -> list[dic
                     page.wait_for_timeout(3000)
                     page_title = page.title()
                     print(f"[debug] {track}: page={page_number} landed_url={page.url} title={page_title!r} cookies={len(browser.cookies())}")
-                    if "just a moment" in page_title.casefold() or "verify" in page_title.casefold() or "captcha" in page_title.casefold():
-                        print(f"[scrape] {track}: complete the Wuzzuf browser check in the visible window; waiting 60 seconds")
-                        page.wait_for_timeout(60000)
+                    if _is_challenge_title(page_title):
+                        _wait_out_challenge(page, f"{track} page={page_number}")
                     page_html = page.content()
                 except Exception as exc:
                     failed_pages += 1
@@ -184,8 +213,17 @@ def scrape_wuzzuf(track: str, days_back: int = 2, timeout: int = 20) -> list[dic
                     page.wait_for_timeout(1000)
                     detail_title = page.title()
                     redirected = page.url.rstrip("/") != row["_url"].rstrip("/")
-                    challenge = any(term in detail_title.casefold() for term in ("just a moment", "verify", "captcha"))
-                    title, description, posted_raw, posted = _detail_fields(page.content())
+                    challenge = _is_challenge_title(detail_title)
+                    if challenge:
+                        # Previously this fell straight through to _detail_fields() and saved
+                        # whatever the challenge page's og:title/description happened to be as
+                        # if it were real job data, tagged source="wuzzuf" -- silent corruption.
+                        # Wait it out like the listing pages do, and only proceed once resolved.
+                        challenge = not _wait_out_challenge(page, f"{track} detail={index}/{len(listings)}")
+                        detail_title = page.title()
+                    if challenge:
+                        raise RuntimeError(f"challenge still showing: {detail_title!r}")
+                    title, company, description, posted_raw, posted = _detail_fields(page.content())
                     print(f"[debug] {track}: detail={index}/{len(listings)} loaded=True redirected={redirected} challenge={challenge} landed_url={page.url}")
                     print(f"[debug] {track}: detail={index}/{len(listings)} posted_date_raw={posted_raw!r} parsed_date={posted!r}")
                     detail_successes += 1
@@ -197,7 +235,7 @@ def scrape_wuzzuf(track: str, days_back: int = 2, timeout: int = 20) -> list[dic
                     continue
                 if posted and posted < cutoff:
                     continue
-                result.append({"job_title": title or row["job_title"], "company": "", "description_text": description, "source": "wuzzuf", "date_collected": (posted or datetime.now(timezone.utc)).date().isoformat(), "track": track})
+                result.append({"job_title": title or row["job_title"], "company": company, "description_text": description, "source": "wuzzuf", "date_collected": (posted or datetime.now(timezone.utc)).date().isoformat(), "track": track})
         finally:
             browser.close()
     expected = str(expected_count) if expected_count is not None else "unknown"

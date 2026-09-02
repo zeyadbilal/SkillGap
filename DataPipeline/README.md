@@ -199,6 +199,10 @@ This is the part that changed from the original "just scrape Wuzzuf" plan, and i
 
 Practically, this means an unattended script cannot reliably scrape Wuzzuf on its own. `src/wuzzuf_scraper.py` reflects that honestly: it drives a **real, visible** Chromium window via Playwright, with a **persistent session** (`data/browser_profile/`). The first time, a human has to actually clear Wuzzuf's check in that visible window; the session cookie is then saved and reused on later runs for as long as it stays valid. There is no headless/silent mode for this path, by design.
 
+Two correctness bugs in that scraper were caught by code review and fixed, though neither could be exercised end-to-end without a live, human-cleared browser session:
+- **The employer name was never actually extracted.** `company` was hardcoded to `""` on every Wuzzuf-sourced row, always. `_detail_fields()` now pulls it from the schema.org `JobPosting` JSON-LD block (`hiringOrganization.name`) that Wuzzuf's job pages carry for SEO — verified against a synthetic HTML fixture, since real pages need a live session to reach.
+- **A challenge on a job *detail* page (as opposed to the search page) was silently treated as success.** The old code checked the detail page's title for challenge markers, logged the boolean, and then extracted fields from whatever HTML was actually on screen — including a challenge page — and saved it as ordinary `source="wuzzuf"` data. It now waits out the challenge (polling the title every 3s, up to 120s) before extracting anything, and if it's still showing after that, the row is recorded as a failed detail (`source="wuzzuf_detail_failed"`) instead of silently saving challenge-page junk. The search-page wait was changed from a blind fixed 60s sleep to the same poll-until-clear approach, so it also doesn't undershoot on a slow solve or waste time after a fast one.
+
 **The fix — automatic fallback, `refresh_pipeline.fetch_fresh_rows()`:**
 
 For every track, every 2-day cycle, in order:
