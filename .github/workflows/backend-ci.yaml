@@ -1,0 +1,80 @@
+name: backend-ci
+
+on:
+    push:
+        branches:
+            - "main"
+        paths:
+        - 'backend/**'
+    pull_request:
+        branches:
+            - "main"
+        paths:
+        - 'backend/**'
+
+defaults:
+    run:
+        working-directory: backend
+
+jobs:
+    code-check:
+        name: code-check
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                node-version: [20.x, 22.x, 24.x, 26.x]
+        steps:
+            - name: checkout source code
+              uses: actions/checkout@v4
+
+            - name: setup node-v${{matrix.node-version}}
+              uses: actions/setup-node@v4
+              with:
+                  node-version: ${{matrix.node-version}}
+                  cache: "npm"
+                  cache-dependency-path: "backend/package-lock.json"
+
+            - name: install Dependencies
+              run: npm ci
+
+            - name: testing with coverage
+              run: npm test -- --coverage
+
+            - name: Upload Coverage Report
+              uses: actions/upload-artifact@v4
+              with:
+                  name: code-coverage-report-node-${{matrix.node-version}}
+                  path: backend/coverage/
+
+            - name: Dependency Security Scan (Application Level)
+              run: npm audit --audit-level=high
+
+    # build image for scaning
+    container-build:
+        name: build-scan docker image
+        runs-on: ubuntu-latest
+        needs: code-check
+
+        steps:
+            - name: chackout sourse code
+              uses: actions/checkout@v4
+
+            - name: setup buildx
+              uses: docker/setup-buildx-action@v3
+
+            - name: build backend image
+              uses: docker/build-push-action@v5
+              with:
+                  context: ./backend
+                  push: false
+                  load: true
+                  tags: backend-service:ci-test
+
+            - name: Scan Image Vulnerabilities
+              uses: aquasecurity/trivy-action@v0.36.0
+              with:
+                  image-ref: "backend-service:ci-test"
+                  format: table
+                  exit-code: "1"
+                  ignore-unfixed: true
+                  severity: "CRITICAL"
