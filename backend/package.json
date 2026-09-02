@@ -10,6 +10,7 @@
     "test:coverage": "jest --coverage"
   },
   "dependencies": {
+    "@axiomhq/winston": "^2.0.0",
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
@@ -18,8 +19,15 @@
     "helmet": "^7.1.0",
     "joi": "^18.2.5",
     "jsonwebtoken": "^9.0.3",
+    "mammoth": "^1.12.2",
     "morgan": "^1.10.0",
-    "uuid": "^9.0.1"
+    "pdf-parse": "^2.4.5",
+    "pg": "^8.23.0",
+    "pg-hstore": "^2.3.4",
+    "redis": "^6.2.1",
+    "sequelize": "^6.37.8",
+    "uuid": "^9.0.1",
+    "winston": "^3.19.0"
   },
   "devDependencies": {
     "jest": "^30.5.1",
