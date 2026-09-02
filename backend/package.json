@@ -2,6 +2,9 @@
   "name": "skillgap-backend",
   "version": "1.0.0",
   "description": "Job-Market Skill-Gap Advisor API",
+  "engines": {
+    "node": ">=22"
+  },
   "main": "src/app.js",
   "scripts": {
     "start": "node src/app.js",
@@ -9,16 +12,21 @@
     "test": "NODE_ENV=test jest --runInBand"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.114.0",
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
+    "dotenv": "^16.6.1",
     "express": "^4.21.0",
     "express-rate-limit": "^8.7.0",
     "helmet": "^7.1.0",
     "joi": "^18.2.5",
     "jsonwebtoken": "^9.0.3",
     "morgan": "^1.10.0",
-    "uuid": "^9.0.1"
+    "multer": "^2.3.0",
+    "pg": "^8.23.0",
+    "postgres": "^3.4.9",
+    "uuid": "^9.0.1",
+    "winston": "^3.19.0"
   },
   "devDependencies": {
     "jest": "^30.5.1",
