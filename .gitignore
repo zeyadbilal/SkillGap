@@ -1,1 +1,9 @@
 backend/node_modules/*
+
+# Local Chromium session used only to clear Wuzzuf's bot-verification challenge.
+# Machine-specific, regenerates automatically, holds session cookies - never commit it.
+DataPipeline/data/browser_profile/
+
+# Python bytecode caches
+__pycache__/
+*.pyc

@@ -1,0 +1,58 @@
+{
+  "Backend Development": {
+    "last_scraped_at": "2026-09-02T17:58:16+00:00",
+    "raw_file_path": "data/raw/raw_jobs_backend_development.csv",
+    "clean_file_path": "data/clean/clean_jobs_backend_development.csv",
+    "skills_file_path": "data/skills/extracted_skills_backend_development.csv",
+    "frequency_file_path": "data/skills/skill_frequency_backend_development.csv"
+  },
+  "Frontend Development": {
+    "last_scraped_at": "2026-09-02T17:58:17+00:00",
+    "raw_file_path": "data/raw/raw_jobs_frontend_development.csv",
+    "clean_file_path": "data/clean/clean_jobs_frontend_development.csv",
+    "skills_file_path": "data/skills/extracted_skills_frontend_development.csv",
+    "frequency_file_path": "data/skills/skill_frequency_frontend_development.csv"
+  },
+  "Full-Stack Development": {
+    "last_scraped_at": "2026-09-02T17:58:18+00:00",
+    "raw_file_path": "data/raw/raw_jobs_full_stack_development.csv",
+    "clean_file_path": "data/clean/clean_jobs_full_stack_development.csv",
+    "skills_file_path": "data/skills/extracted_skills_full_stack_development.csv",
+    "frequency_file_path": "data/skills/skill_frequency_full_stack_development.csv"
+  },
+  "Mobile Development": {
+    "last_scraped_at": "2026-09-02T17:58:52+00:00",
+    "raw_file_path": "data/raw/raw_jobs_mobile_development.csv",
+    "clean_file_path": "data/clean/clean_jobs_mobile_development.csv",
+    "skills_file_path": "data/skills/extracted_skills_mobile_development.csv",
+    "frequency_file_path": "data/skills/skill_frequency_mobile_development.csv"
+  },
+  "DevOps & Cloud Engineering": {
+    "last_scraped_at": "2026-09-02T17:58:20+00:00",
+    "raw_file_path": "data/raw/raw_jobs_devops_cloud_engineering.csv",
+    "clean_file_path": "data/clean/clean_jobs_devops_cloud_engineering.csv",
+    "skills_file_path": "data/skills/extracted_skills_devops_cloud_engineering.csv",
+    "frequency_file_path": "data/skills/skill_frequency_devops_cloud_engineering.csv"
+  },
+  "Network Administration": {
+    "last_scraped_at": "2026-09-02T17:58:20+00:00",
+    "raw_file_path": "data/raw/raw_jobs_network_administration.csv",
+    "clean_file_path": "data/clean/clean_jobs_network_administration.csv",
+    "skills_file_path": "data/skills/extracted_skills_network_administration.csv",
+    "frequency_file_path": "data/skills/skill_frequency_network_administration.csv"
+  },
+  "Network Security": {
+    "last_scraped_at": "2026-09-02T17:58:21+00:00",
+    "raw_file_path": "data/raw/raw_jobs_network_security.csv",
+    "clean_file_path": "data/clean/clean_jobs_network_security.csv",
+    "skills_file_path": "data/skills/extracted_skills_network_security.csv",
+    "frequency_file_path": "data/skills/skill_frequency_network_security.csv"
+  },
+  "Machine Learning / AI": {
+    "last_scraped_at": "2026-09-02T18:10:15+00:00",
+    "raw_file_path": "data/raw/raw_jobs_machine_learning_ai.csv",
+    "clean_file_path": "data/clean/clean_jobs_machine_learning_ai.csv",
+    "skills_file_path": "data/skills/extracted_skills_machine_learning_ai.csv",
+    "frequency_file_path": "data/skills/skill_frequency_machine_learning_ai.csv"
+  }
+}

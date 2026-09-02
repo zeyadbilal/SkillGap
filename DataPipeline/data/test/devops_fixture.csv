@@ -1,0 +1,5 @@
+job_title,company,description_text,source,date_collected,track
+DevOps Engineer,CloudWorks,"Manage Linux infrastructure with Docker, Kubernetes, Terraform, Ansible, AWS, and GitHub Actions.",manual_upload,2026-09-02,DevOps & Cloud Engineering
+Cloud Platform Engineer,InfraLabs,"Build AWS services using EC2, S3, IAM, CloudFormation, and Python. Monitor systems with Prometheus and Grafana.",manual_upload,2026-09-01,DevOps & Cloud Engineering
+Site Reliability Engineer,ScaleUp,"Operate Kubernetes clusters and Helm releases, automate CI/CD with Jenkins, and monitor logs with ELK and Logstash.",manual_upload,2026-08-31,DevOps & Cloud Engineering
+Site Reliability Engineer,ScaleUp,"Operate Kubernetes clusters and Helm releases, automate CI/CD with Jenkins, and monitor logs with ELK and Logstash.",manual_upload,2026-08-31,DevOps & Cloud Engineering
