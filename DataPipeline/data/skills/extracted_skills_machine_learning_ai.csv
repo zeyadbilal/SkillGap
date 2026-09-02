@@ -1,48 +1,25 @@
 job_id,skill,domain
-1,aws,Machine Learning / AI
-1,feature engineering,Machine Learning / AI
-1,machine learning,Machine Learning / AI
-1,model deployment,Machine Learning / AI
+1,llm,Machine Learning / AI
 1,python,Machine Learning / AI
-1,pytorch,Machine Learning / AI
-1,spark,Machine Learning / AI
-1,tensorflow,Machine Learning / AI
 2,aws,Machine Learning / AI
+2,feature engineering,Machine Learning / AI
+2,machine learning,Machine Learning / AI
+2,model deployment,Machine Learning / AI
+2,python,Machine Learning / AI
+2,pytorch,Machine Learning / AI
 2,spark,Machine Learning / AI
-2,sql,Machine Learning / AI
-3,computer vision,Machine Learning / AI
-3,python,Machine Learning / AI
-3,sql,Machine Learning / AI
-4,aws,Machine Learning / AI
+2,tensorflow,Machine Learning / AI
+3,aws,Machine Learning / AI
+3,machine learning,Machine Learning / AI
+3,r,Machine Learning / AI
+3,statistics,Machine Learning / AI
+4,llm,Machine Learning / AI
 4,machine learning,Machine Learning / AI
-4,r,Machine Learning / AI
+4,sql,Machine Learning / AI
 4,statistics,Machine Learning / AI
 5,aws,Machine Learning / AI
-5,jupyter,Machine Learning / AI
-5,llm,Machine Learning / AI
-5,machine learning,Machine Learning / AI
-5,mlops,Machine Learning / AI
-5,python,Machine Learning / AI
-5,pytorch,Machine Learning / AI
-5,scikit-learn,Machine Learning / AI
-5,spark,Machine Learning / AI
-5,sql,Machine Learning / AI
-5,statistics,Machine Learning / AI
-5,tensorflow,Machine Learning / AI
-6,aws,Machine Learning / AI
+5,generative ai,Machine Learning / AI
+5,reinforcement learning,Machine Learning / AI
 6,python,Machine Learning / AI
-6,spark,Machine Learning / AI
+6,r,Machine Learning / AI
 6,sql,Machine Learning / AI
-7,llm,Machine Learning / AI
-7,machine learning,Machine Learning / AI
-7,sql,Machine Learning / AI
-7,statistics,Machine Learning / AI
-8,aws,Machine Learning / AI
-8,python,Machine Learning / AI
-8,sql,Machine Learning / AI
-9,aws,Machine Learning / AI
-9,generative ai,Machine Learning / AI
-9,reinforcement learning,Machine Learning / AI
-10,python,Machine Learning / AI
-10,r,Machine Learning / AI
-10,sql,Machine Learning / AI

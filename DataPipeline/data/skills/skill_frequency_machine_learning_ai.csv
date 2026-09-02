@@ -1,19 +1,15 @@
 skill,count
-aws,7
-sql,7
-python,6
-machine learning,4
-spark,4
-statistics,3
+aws,3
+machine learning,3
+python,3
 llm,2
-pytorch,2
 r,2
-tensorflow,2
-computer vision,1
+sql,2
+statistics,2
 feature engineering,1
 generative ai,1
-jupyter,1
-mlops,1
 model deployment,1
+pytorch,1
 reinforcement learning,1
-scikit-learn,1
+spark,1
+tensorflow,1

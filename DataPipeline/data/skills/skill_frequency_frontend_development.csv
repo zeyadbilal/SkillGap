@@ -1,21 +1,17 @@
 skill,count
-react,4
+react,3
 accessibility,2
-angular,2
-css,2
-html,2
-javascript,2
-next.js,2
 typescript,2
+css,1
 git,1
-github,1
 graphql,1
+html,1
+javascript,1
 jest,1
 less,1
+next.js,1
 npm,1
 playwright,1
 redux,1
-responsive design,1
 vite,1
-vue,1
 webpack,1

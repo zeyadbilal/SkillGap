@@ -1,23 +1,20 @@
 skill,count
-python,14
-aws,12
-gcp,11
-azure,10
-docker,10
-kubernetes,8
-monitoring,8
-security,8
-ci/cd,7
+aws,7
+azure,7
+docker,7
+kubernetes,7
+python,7
+security,7
 terraform,7
+gcp,6
 linux,6
+bash,5
 grafana,5
-bash,4
-prometheus,4
+prometheus,5
+ci/cd,4
+monitoring,4
 iam,3
 ansible,2
-apache,2
-google cloud,2
-helm,2
 jenkins,2
 networking,2
 s3,2
@@ -26,6 +23,8 @@ ec2,1
 elk,1
 git,1
 github actions,1
-gitlab ci,1
+google cloud,1
+helm,1
 logstash,1
+puppet,1
 shell scripting,1

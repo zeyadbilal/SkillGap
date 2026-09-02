@@ -12,12 +12,27 @@ free, require no login/key, and return no verification wall at all --
 - Arbeitnow  (https://www.arbeitnow.com/api/job-board-api) -- broad, mostly EU
 
 Neither API lets you ask "give me Network Security jobs" -- they return their
-latest postings across every category, unlabelled. So classification reuses
-the project's own `skills_dictionary.json`: a posting is accepted for a track
-only if its title + description contain at least MIN_SKILL_HITS *distinct*
-keywords from that track's list. A single generic word ("cloud", "AI") is not
-enough on these mixed-category feeds; requiring several distinct hits is what
-keeps false positives down without any ML.
+latest postings across every category, unlabelled, so every posting has to be
+assigned to (at most) one of the 8 tracks. Classification is two-tiered:
+
+1. Title hints (TITLE_HINTS below): a small set of near-unambiguous phrases
+   per track ("devops", "ai engineer", "full stack", ...). If exactly one
+   track's hints appear in the job title, that title is trusted outright --
+   titles are written by the poster to say what the role actually is, so this
+   is the highest-precision signal available without ML.
+2. Otherwise, fall back to `skills_dictionary.json`: count each track's
+   *distinct* keyword hits in title + description, and assign the posting to
+   whichever track scores highest -- but only if that top score clears
+   MIN_SKILL_HITS *and* beats the runner-up track, so a posting that matches
+   two tracks about equally (mostly generic keywords like "python", "aws",
+   "docker") is dropped instead of guessed at.
+
+Earlier versions of this module tested each track independently against the
+whole pool, so a single posting (say "AI Engineer" mentioning Docker/Azure/
+Python) could clear the threshold for DevOps *and* ML/AI *and* Full-Stack at
+once and get duplicated into all three. Classification now happens once per
+posting across all 8 tracks together, so each posting lands in at most one
+track's output.
 
 Coverage is honest, not perfect: Backend/Frontend/Full-Stack/DevOps/Mobile/ML
 postings show up regularly. Network Administration and Network Security
@@ -35,14 +50,40 @@ import urllib.request
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-from refresh_pipeline import DICTIONARY_PATH, validate_track
+from refresh_pipeline import DICTIONARY_PATH, FIXED_TRACKS, validate_track
 
 REMOTEOK_URL = "https://remoteok.com/api"
 ARBEITNOW_URL = "https://www.arbeitnow.com/api/job-board-api"
-MIN_SKILL_HITS = 3
+MIN_SKILL_HITS = 4  # for the title-less keyword fallback only; a title-based pick only needs >=1 hit as a sanity check
 USER_AGENT = "Mozilla/5.0 (compatible; SkillGap-MVP/1.0; +data-pipeline)"
 
+# Tie-break order for the keyword fallback, most specific first. Full-Stack and
+# DevOps & Cloud Engineering keep the broadest keyword lists (they legitimately
+# overlap with Backend/Frontend/Network Administration's own lists), so on an
+# exact score tie the narrower, more specific track should win rather than
+# whichever track happens to have the bigger dictionary.
+TRACK_PRIORITY = [
+    "Backend Development", "Frontend Development", "Mobile Development",
+    "Network Administration", "Network Security", "Machine Learning / AI",
+    "Full-Stack Development", "DevOps & Cloud Engineering",
+]
+
+# Near-unambiguous title phrases per track, checked against a hyphen-normalized,
+# lowercased job_title. Deliberately narrow -- these should almost never appear
+# in a posting for a *different* track, unlike generic skill keywords.
+TITLE_HINTS: dict[str, list[str]] = {
+    "Backend Development": ["backend", "back end"],
+    "Frontend Development": ["frontend", "front end"],
+    "Full-Stack Development": ["full stack", "fullstack"],
+    "Mobile Development": ["mobile developer", "mobile engineer", "ios developer", "ios engineer", "android developer", "android engineer", "react native developer"],
+    "DevOps & Cloud Engineering": ["devops", "dev ops", "site reliability", "sre engineer", "platform engineer", "cloud engineer", "infrastructure engineer"],
+    "Network Administration": ["network administrator", "systems administrator", "system administrator", "network engineer", "it administrator", "sysadmin"],
+    "Network Security": ["security engineer", "cybersecurity", "cyber security", "security analyst", "penetration tester", "infosec", "information security"],
+    "Machine Learning / AI": ["machine learning", "ai engineer", "data scientist", "ml engineer", "artificial intelligence", "deep learning"],
+}
+
 _pool_cache: list[dict[str, object]] | None = None
+_classified_cache: dict[str, list[dict[str, object]]] | None = None
 
 
 def _get_json(url: str, timeout: int = 20) -> dict | list:
@@ -112,8 +153,9 @@ def _load_pool(force: bool = False) -> list[dict[str, object]]:
 
 def reset_pool_cache() -> None:
     """Force the next fetch to hit the APIs again instead of reusing this cycle's pool."""
-    global _pool_cache
+    global _pool_cache, _classified_cache
     _pool_cache = None
+    _classified_cache = None
 
 
 def _skill_pattern(skill: str) -> re.Pattern[str]:
@@ -125,25 +167,67 @@ def _distinct_hits(text: str, keywords: list[str]) -> set[str]:
     return {keyword for keyword in keywords if _skill_pattern(keyword).search(text)}
 
 
-def fetch_jobs_for_track(track: str, days_back: int = 2, dictionary_path: Path | None = None) -> list[dict[str, str]]:
-    """Pull the shared API pool and keep only postings that look like `track`.
+def _title_track(job_title: str) -> str | None:
+    """Return the one track whose title hints appear in job_title, or None
+    if zero or more than one track matches (both cases are too ambiguous to
+    trust the title alone)."""
+    normalized = f" {job_title.lower().replace('-', ' ')} "
+    matches = [track for track, hints in TITLE_HINTS.items() if any(hint in normalized for hint in hints)]
+    return matches[0] if len(matches) == 1 else None
 
-    A posting counts as belonging to `track` when its title + description
-    contain at least MIN_SKILL_HITS distinct keywords from that track's entry
-    in skills_dictionary.json, and its posted date falls within days_back.
-    """
-    validate_track(track)
+
+def _classify(row: dict[str, object], dictionary: dict[str, list[str]]) -> str | None:
+    """Assign one posting to at most one track: trust an unambiguous title,
+    otherwise pick whichever track's dictionary scores highest -- as long as
+    it clears MIN_SKILL_HITS. Exact ties go to the more specific track
+    (TRACK_PRIORITY), not to whichever list happens to be bigger."""
+    title_pick = _title_track(str(row["job_title"]))
+    haystack = f"{row['job_title']} {row['description_text']}"
+    scores = {track: len(_distinct_hits(haystack, keywords)) for track, keywords in dictionary.items()}
+
+    if title_pick is not None:
+        return title_pick if scores.get(title_pick, 0) >= 1 else None
+
+    ranked = sorted(scores.items(), key=lambda item: (-item[1], TRACK_PRIORITY.index(item[0])))
+    best_track, best_score = ranked[0]
+    if best_score >= MIN_SKILL_HITS:
+        return best_track
+    return None
+
+
+def _classify_pool(dictionary_path: Path | None = None) -> dict[str, list[dict[str, object]]]:
+    """Partition the shared pool into {track: [postings]}, each posting in at
+    most one track's list. Cached alongside the pool for one refresh cycle."""
+    global _classified_cache
+    if _classified_cache is not None:
+        return _classified_cache
+
     dictionary_path = dictionary_path or DICTIONARY_PATH
     with dictionary_path.open(encoding="utf-8") as handle:
-        keywords = json.load(handle)[track]
+        dictionary = json.load(handle)
 
+    buckets: dict[str, list[dict[str, object]]] = {track: [] for track in FIXED_TRACKS}
+    for row in _load_pool():
+        track = _classify(row, dictionary)
+        if track is not None:
+            buckets[track].append(row)
+
+    counts = ", ".join(f"{track}={len(rows)}" for track, rows in buckets.items())
+    print(f"[api] classified pool -> {counts}")
+    _classified_cache = buckets
+    return buckets
+
+
+def fetch_jobs_for_track(track: str, days_back: int = 2, dictionary_path: Path | None = None) -> list[dict[str, str]]:
+    """Pull the shared API pool and keep only postings classified as `track`.
+
+    Each posting in the pool is assigned to at most one track (see _classify),
+    so the same posting can never appear under two different tracks' outputs.
+    """
+    validate_track(track)
     cutoff = datetime.now(timezone.utc) - timedelta(days=days_back)
     matched: list[dict[str, str]] = []
-    for row in _load_pool():
-        haystack = f"{row['job_title']} {row['description_text']}"
-        hits = _distinct_hits(haystack, keywords)
-        if len(hits) < MIN_SKILL_HITS:
-            continue
+    for row in _classify_pool(dictionary_path).get(track, []):
         posted = row["posted_at"] or datetime.now(timezone.utc)
         if posted < cutoff:
             continue
@@ -155,5 +239,5 @@ def fetch_jobs_for_track(track: str, days_back: int = 2, dictionary_path: Path |
             "date_collected": posted.date().isoformat(),
             "track": track,
         })
-    print(f"[api] {track}: {len(matched)} postings matched (>= {MIN_SKILL_HITS} distinct skills, within {days_back}d)")
+    print(f"[api] {track}: {len(matched)} postings matched (within {days_back}d)")
     return matched

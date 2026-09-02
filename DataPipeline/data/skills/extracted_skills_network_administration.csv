@@ -1,19 +1,6 @@
 job_id,skill,domain
-1,bash,Network Administration
-1,ios,Network Administration
-1,linux,Network Administration
-2,bash,Network Administration
-2,ios,Network Administration
-2,linux,Network Administration
-3,dhcp,Network Administration
-3,dns,Network Administration
-3,tcp/ip,Network Administration
-3,troubleshooting,Network Administration
-3,windows server,Network Administration
-4,dhcp,Network Administration
-4,dns,Network Administration
-4,tcp/ip,Network Administration
-4,windows server,Network Administration
-5,bash,Network Administration
-5,high availability,Network Administration
-5,powershell,Network Administration
+1,dhcp,Network Administration
+1,dns,Network Administration
+1,https,Network Administration
+1,tcp/ip,Network Administration
+1,vpn,Network Administration
