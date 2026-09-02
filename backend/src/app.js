@@ -3,6 +3,7 @@ const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
 const dotenv = require("dotenv");
+const cvRoute = require("./routes/cvRoute");
 
 dotenv.config();
 
@@ -18,6 +19,7 @@ app.use(morgan("dev"));
 app.use(express.json());
 
 app.use("/", routes);
+app.use("/cv", cvRoute);
 
 app.use((req, res) => {
   res.status(404).json({
