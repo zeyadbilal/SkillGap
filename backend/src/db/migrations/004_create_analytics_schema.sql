@@ -1,7 +1,7 @@
 CREATE SCHEMA IF NOT EXISTS analytics;
 
 CREATE TABLE IF NOT EXISTS analytics.reports (
-    id                  UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id             UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
     generated_at        TIMESTAMP DEFAULT NOW(),
     skill_gaps          JSONB,
@@ -16,7 +16,7 @@ CREATE INDEX IF NOT EXISTS idx_reports_user ON analytics.reports (user_id);
 CREATE INDEX IF NOT EXISTS idx_reports_generated_at ON analytics.reports (generated_at DESC);
 
 CREATE TABLE IF NOT EXISTS analytics.skill_trends (
-    id           UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     skill_id     UUID NOT NULL REFERENCES skills.skills(id) ON DELETE CASCADE,
     sector       VARCHAR(100),
     period       DATE NOT NULL,

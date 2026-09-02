@@ -65,7 +65,10 @@ async function runMigrations() {
 
 if (require.main === module) {
   runMigrations().catch((err) => {
-    logger.error('Migration run aborted', { error: err.message });
+    // Log full error with stack to aid debugging
+    logger.error('Migration run aborted', err);
+    // Also output to console so developer running the script sees the stack immediately
+    console.error(err && (err.stack || err));
     process.exit(1);
   });
 }

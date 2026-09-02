@@ -1,7 +1,7 @@
 CREATE SCHEMA IF NOT EXISTS skills;
 
 CREATE TABLE IF NOT EXISTS skills.skills (
-    id                UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name              VARCHAR(100) NOT NULL,
     normalized_name   VARCHAR(100) UNIQUE NOT NULL,
     category          VARCHAR(50),
@@ -19,7 +19,7 @@ CREATE INDEX IF NOT EXISTS idx_skills_popularity ON skills.skills (popularity_sc
 CREATE INDEX IF NOT EXISTS idx_skills_trend ON skills.skills (trend_direction);
 
 CREATE TABLE IF NOT EXISTS skills.user_skills (
-    id                   UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id                   UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id              UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
     skill_id             UUID NOT NULL REFERENCES skills.skills(id) ON DELETE CASCADE,
     proficiency_level    VARCHAR(20) CHECK (proficiency_level IN ('Beginner','Intermediate','Advanced','Expert')),
