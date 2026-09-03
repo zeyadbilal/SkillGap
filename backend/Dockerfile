@@ -23,6 +23,8 @@ WORKDIR /app
 COPY --from=deps --chown=node:node /app/node_modules ./node_modules
 COPY --chown=node:node package.json ./
 COPY --chown=node:node src ./src
+COPY --chown=node:node docs ./docs
+
 
 ARG DEFAULT_PORT=5000
 ENV PORT=$DEFAULT_PORT
