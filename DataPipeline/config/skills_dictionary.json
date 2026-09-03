@@ -1,0 +1,94 @@
+{
+  "Backend Development": [
+    "node.js", "express.js", "django", "flask", "fastapi", "spring boot", "rest api", "graphql",
+    "postgresql", "mysql", "mongodb", "redis", "elasticsearch",
+    "python", "java", "c#", ".net", "go", "ruby", "php", "rust",
+    "docker", "kubernetes", "nginx", "apache",
+    "jwt", "oauth", "websockets", "grpc", "rabbitmq", "kafka",
+    "git", "ci/cd", "terraform", "linux", "microservices", "api gateway",
+    "typeorm", "sequelize", "prisma", "sqlalchemy", "hibernate",
+    "aws", "azure", "gcp", "cloud functions", "lambda"
+  ],
+  "Frontend Development": [
+    "javascript", "typescript", "html", "css", "sass", "less",
+    "react", "vue.js", "angular", "svelte", "next.js", "nuxt.js", "remix",
+    "tailwind css", "bootstrap", "material ui", "chakra ui",
+    "redux", "zustand", "pinia", "mobx", "recoil",
+    "webpack", "vite", "esbuild", "rollup",
+    "storybook", "cypress", "playwright", "jest", "vitest",
+    "figma", "responsive design", "accessibility", "seo",
+    "rest api", "graphql", "axios", "fetch api", "web sockets",
+    "pwa", "ssr", "ssg", "dom manipulation"
+  ],
+  "Full-Stack Development": [
+    "node.js", "express.js", "react", "next.js", "vue.js", "nuxt.js",
+    "typescript", "javascript", "postgresql", "mongodb", "redis",
+    "docker", "kubernetes", "aws", "azure", "gcp",
+    "rest api", "graphql", "websockets", "jwt", "oauth",
+    "git", "ci/cd", "nginx", "linux",
+    "tailwind css", "sass", "html", "css",
+    "sequelize", "prisma", "typeorm", "mongoose",
+    "microservices", "serverless", "terraform",
+    "jest", "cypress", "playwright", "storybook"
+  ],
+  "Mobile Development": [
+    "react native", "flutter", "swift", "kotlin", "dart", "objective-c",
+    "xcode", "android studio", "ios", "android",
+    "firebase", "realm", "sqflite", "core data",
+    "redux", "bloc", "provider", "riverpod",
+    "rest api", "graphql", "websockets",
+    "push notifications", "in-app purchases", "app store", "play store",
+    "ci/cd", "fastlane", "bitrise",
+    "material design", "cupertino", "ui/ux",
+    "git", "figma", "responsive design"
+  ],
+  "DevOps & Cloud Engineering": [
+    "docker", "kubernetes", "terraform", "ansible", "puppet", "chef",
+    "aws", "azure", "gcp", "digitalocean", "heroku",
+    "ci/cd", "jenkins", "github actions", "gitlab ci", "circleci", "argocd",
+    "nginx", "apache", "traefik", "haproxy",
+    "linux", "bash", "powershell", "python",
+    "prometheus", "grafana", "datadog", "elk stack", "splunk",
+    "vagrant", "packer", "cloudformation", "pulumi",
+    "helm", "istio", "envoy", "service mesh",
+    "dns", "ssl", "load balancing", "firewall", "vpn",
+    "postgresql", "mysql", "mongodb", "redis", "elasticsearch"
+  ],
+  "Network Administration": [
+    "cisco", "ccna", "ccnp", "switching", "routing",
+    "tcp/ip", "dns", "dhcp", "vpn", "firewall",
+    "vlan", "spanning tree", "ospf", "bgp", "mpls",
+    "linux", "windows server", "active directory", "powershell",
+    "vmware", "hyper-v", "virtualization",
+    "monitoring", "nagios", "zabbix", "prtg",
+    "backup", "disaster recovery", "high availability",
+    "wireshark", "tcpdump", "network troubleshooting",
+    "cloud networking", "aws vpc", "azure vnet"
+  ],
+  "Network Security": [
+    "firewall", "ids", "ips", "siem", "soc",
+    "penetration testing", "vulnerability assessment", "owasp",
+    "cisco", "fortinet", "palo alto", "checkpoint",
+    "tcp/ip", "dns", "ssl/tls", "ipsec", "vpn",
+    "linux", "bash", "python", "powershell",
+    "nmap", "metasploit", "burp suite", "wireshark",
+    "comp tia security", "ceh", "cissp", "oscp",
+    "incident response", "forensics", "malware analysis",
+    "zero trust", "identity management", "iam",
+    "cloud security", "aws security", "azure security"
+  ],
+  "Machine Learning / AI": [
+    "python", "r", "java", "scala",
+    "tensorflow", "pytorch", "keras", "scikit-learn", "xgboost", "lightgbm",
+    "pandas", "numpy", "scipy", "matplotlib", "seaborn",
+    "machine learning", "deep learning", "nlp", "computer vision",
+    "regression", "classification", "clustering", "recommendation systems",
+    "transformers", "bert", "gpt", "llm", "langchain", "hugging face",
+    "opencv", "yolo", "cnn", "rnn", "lstm", "gan",
+    "data preprocessing", "feature engineering", "model evaluation",
+    "mlflow", "weights & biases", "dvc",
+    "docker", "kubernetes", "aws sagemaker", "gcp vertex ai",
+    "sql", "mongodb", "spark", "hadoop", "etl",
+    "jupyter notebook", "git", "ci/cd"
+  ]
+}
