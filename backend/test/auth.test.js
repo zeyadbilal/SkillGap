@@ -3,9 +3,7 @@ const { randomUUID } = require('node:crypto');
 
 const app = require('../src/app');
 
-// 1. استدعاء ملفات قاعدة البيانات و Redis (قم بتعديل المسار حسب مشروعك)
-// const prisma = require('../src/prisma'); // مثال إذا كنت تستخدم Prisma
-// const redisClient = require('../src/redis'); // مثال إذا كنت تستخدم Redis
+const sequelize = require('../src/config/database'); 
 
 const newUser = (overrides = {}) => ({
   email: `${randomUUID()}@example.com`,
@@ -18,6 +16,11 @@ const newUser = (overrides = {}) => ({
 
 const register = async (overrides = {}) => {
   const response = await request(app).post('/auth/register').send(newUser(overrides));
+  
+  if (response.status !== 201 && response.status !== 200) {
+    console.error('Register API Failed:', response.body);
+  }
+  
   return response.body.data;
 };
 
@@ -28,14 +31,12 @@ const refresh = async (refreshToken) => {
 
 describe('Authentication API', () => {
 
+  beforeAll(async () => {
+    await sequelize.sync({ force: true });
+  });
+
   afterAll(async () => {
-    await prisma.$disconnect();
-
     await sequelize.close();
-
-    await pool.end();
-
-     await redisClient.quit();
   });
 
   describe('POST /auth/register', () => {
