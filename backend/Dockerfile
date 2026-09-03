@@ -6,7 +6,7 @@ RUN apk update && apk upgrade --no-cache
 WORKDIR /app
 COPY package*.json ./
 
-RUN --mount=type=cache,target=/root/.npm npm ci --omit=dev
+RUN ci --omit=dev
 
 
 
