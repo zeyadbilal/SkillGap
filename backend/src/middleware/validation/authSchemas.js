@@ -40,6 +40,7 @@ const refreshSchema = Joi.object({
 });
 
 module.exports = {
+  fieldsOfStudy,
   registerSchema,
   loginSchema,
   refreshSchema,
