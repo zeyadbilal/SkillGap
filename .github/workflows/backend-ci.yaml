@@ -4,11 +4,13 @@ on:
     push:
         branches:
             - "main"
+            - abdelrahman-deployment
         paths:
         - 'backend/**'
     pull_request:
         branches:
             - "main"
+            - abdelrahman-deployment
         paths:
         - 'backend/**'
 
