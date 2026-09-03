@@ -1,6 +1,5 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../config/database');
-const { TRACKS } = require('../config/tracks');
 
 const User = sequelize.define(
   'User',
@@ -37,26 +36,33 @@ const User = sequelize.define(
     },
     yearsExperience: {
       type: DataTypes.INTEGER,
-      defaultValue: 0,
       field: 'years_experience',
       validate: {
         min: 0,
         max: 70,
       },
     },
-    track: {
-      type: DataTypes.STRING(30),
-      validate: {
-        isIn: [TRACKS],
-      },
+    avatarUrl: {
+      type: DataTypes.STRING(500),
+      field: 'avatar_url',
+    },
+    isActive: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+      field: 'is_active',
+    },
+    lastLogin: {
+      type: DataTypes.DATE,
+      field: 'last_login',
     },
   },
   {
+    schema: 'auth',
     tableName: 'users',
     underscored: true,
     timestamps: true,
     createdAt: 'created_at',
-    updatedAt: false,
+    updatedAt: 'updated_at',
   }
 );
 

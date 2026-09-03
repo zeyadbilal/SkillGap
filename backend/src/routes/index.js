@@ -1,5 +1,6 @@
 const express = require('express');
 const authRouter = require('./auth');
+const recommendationsRouter = require('./recommendations');
 
 const router = express.Router();
 
@@ -11,5 +12,7 @@ router.get("/health", (req, res) => {
 });
 
 router.use('/auth', authRouter);
+router.use('/api/v1/recommendations', recommendationsRouter);
+router.use('/recommendations', recommendationsRouter);
 
 module.exports = router;

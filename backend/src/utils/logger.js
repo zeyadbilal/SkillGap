@@ -1,16 +1,4 @@
 const winston = require('winston');
-const { WinstonTransport } = require('@axiomhq/winston');
-
-const transports = [new winston.transports.Console()];
-
-if (process.env.AXIOM_TOKEN && process.env.AXIOM_DATASET) {
-  transports.push(
-    new WinstonTransport({
-      dataset: process.env.AXIOM_DATASET,
-      token: process.env.AXIOM_TOKEN,
-    })
-  );
-}
 
 const logger = winston.createLogger({
   level: process.env.LOG_LEVEL || 'info',
@@ -21,7 +9,7 @@ const logger = winston.createLogger({
     winston.format.json()
   ),
   defaultMeta: { service: 'skill-gap-advisor-backend' },
-  transports,
+  transports: [new winston.transports.Console()],
 });
 
 module.exports = logger;

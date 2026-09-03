@@ -5,9 +5,10 @@
   "main": "src/app.js",
   "scripts": {
     "start": "node src/app.js",
-    "dev": "NODE_ENV=development nodemon src/app.js",
+    "dev": "nodemon src/app.js",
     "test": "NODE_ENV=test jest --runInBand",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "analyze:cv": "node scripts/analyze_cv.js"
   },
   "dependencies": {
     "@axiomhq/winston": "^2.0.0",
@@ -22,11 +23,11 @@
     "mammoth": "^1.12.2",
     "morgan": "^1.10.0",
     "pdf-parse": "^2.4.5",
+    "pdfjs-dist": "^6.3.289",
     "pg": "^8.23.0",
     "pg-hstore": "^2.3.4",
     "redis": "^6.2.1",
     "sequelize": "^6.37.8",
-    "swagger-ui-express": "^5.0.1",
     "uuid": "^9.0.1",
     "winston": "^3.19.0"
   },

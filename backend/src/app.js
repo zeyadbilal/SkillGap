@@ -19,11 +19,6 @@ app.use(cors());
 app.use(morgan("dev"));
 app.use(express.json());
 
-if (process.env.NODE_ENV === 'development') {
-  const docsRouter = require('./docs-router');
-  app.use('/docs', docsRouter);
-}
-
 app.use("/", routes);
 
 app.use((req, res) => {

@@ -32,6 +32,7 @@ const Report = sequelize.define(
     },
   },
   {
+    schema: 'analytics',
     tableName: 'reports',
     underscored: true,
     timestamps: false,

@@ -1,11 +1,12 @@
 const bcrypt = require('bcryptjs');
+const { v4: uuidv4 } = require('uuid');
 const config = require('../../config');
 const tokenService = require('../token/tokenService');
-const logger = require('../../utils/logger');
-const User = require('../../models/User');
+const userStore = require('./userStore');
+
 const revokedRefreshTokens = new Set();
 
-/** Convert a user to public data (hides sensitive fields). */
+// Convert user object to public data (hide sensitive fields)
 const toPublicUser = (user) => ({
   id: user.id,
   email: user.email,
@@ -14,7 +15,7 @@ const toPublicUser = (user) => ({
   graduationYear: user.graduationYear,
 });
 
-/** Generate access and refresh tokens for a user. */
+// Generate access and refresh tokens for a user
 const generateTokens = (user) => {
   const payload = { sub: user.id, email: user.email };
   return {
@@ -23,15 +24,9 @@ const generateTokens = (user) => {
   };
 };
 
-/**
- * Register a new user.
- * @param {{email: string, password: string, fullName?: string, fieldOfStudy?: string, graduationYear?: number}} input
- * @returns {Promise<{user: object, tokens: {accessToken: string, refreshToken: string}}>}
- * @throws {Error} statusCode 409 if email already registered
- */
+// New user signup: check email doesn't exist, hash password, create user
 const register = async ({ email, password, fullName, fieldOfStudy, graduationYear }) => {
-  const startedAt = Date.now();
-  const existing = await User.findOne({ where: { email } });
+  const existing = userStore.findByEmail(email);
   if (existing) {
     const error = new Error('Email already registered');
     error.statusCode = 409;
@@ -39,32 +34,27 @@ const register = async ({ email, password, fullName, fieldOfStudy, graduationYea
     throw error;
   }
 
-  const passwordHash = await bcrypt.hash(password, config.bcrypt.saltRounds);
+  const hashedPassword = await bcrypt.hash(password, config.bcrypt.saltRounds);
 
-  const user = await User.create({
+  const user = {
+    id: uuidv4(),
     email,
-    passwordHash,
+    passwordHash: hashedPassword,
     fullName,
     fieldOfStudy,
     graduationYear,
-  });
+    createdAt: new Date().toISOString(),
+  };
 
-  const tokens = generateTokens(user);
-  logger.info('User registered', { userId: user.id, email, hashingTimeMs: Date.now() - startedAt });
-  return { user: toPublicUser(user), tokens };
+  const saved = userStore.save(user);
+  const tokens = generateTokens(saved);
+  return { user: toPublicUser(saved), tokens };
 };
 
-/**
- * Log a user in by email and password.
- * @param {{email: string, password: string}} input
- * @returns {Promise<{user: object, tokens: {accessToken: string, refreshToken: string}}>}
- * @throws {Error} statusCode 401 on invalid credentials
- */
+// User login: find user by email, verify password
 const login = async ({ email, password }) => {
-  const startedAt = Date.now();
-  const user = await User.findOne({ where: { email } });
+  const user = userStore.findByEmail(email);
   if (!user) {
-    logger.warn('Login failed: unknown user', { email });
     const error = new Error('Invalid credentials');
     error.statusCode = 401;
     error.errorCode = 'INVALID_CREDENTIALS';
@@ -73,7 +63,6 @@ const login = async ({ email, password }) => {
 
   const valid = await bcrypt.compare(password, user.passwordHash);
   if (!valid) {
-    logger.warn('Login failed: wrong password', { email, userId: user.id });
     const error = new Error('Invalid credentials');
     error.statusCode = 401;
     error.errorCode = 'INVALID_CREDENTIALS';
@@ -81,24 +70,12 @@ const login = async ({ email, password }) => {
   }
 
   const tokens = generateTokens(user);
-  logger.info('User logged in', {
-    userId: user.id,
-    email: user.email,
-    verifyTimeMs: Date.now() - startedAt,
-  });
   return { user: toPublicUser(user), tokens };
 };
 
-/**
- * Exchange a refresh token for new tokens (rotates the refresh token).
- * @param {string} refreshToken
- * @returns {Promise<{accessToken: string, refreshToken: string, expiresIn: number}>}
- * @throws {Error} statusCode 401 on invalid, revoked, or expired token
- */
+// Use refresh token to get new access token
 const refresh = async (refreshToken) => {
-  const startedAt = Date.now();
   if (revokedRefreshTokens.has(refreshToken)) {
-    logger.warn('Refresh failed: token already revoked', { tokenPrefix: refreshToken.slice(0, 10) });
     const error = new Error('Invalid or expired refresh token');
     error.statusCode = 401;
     error.errorCode = 'INVALID_REFRESH_TOKEN';
@@ -109,16 +86,14 @@ const refresh = async (refreshToken) => {
   try {
     payload = tokenService.verifyRefreshToken(refreshToken);
   } catch (err) {
-    logger.warn('Refresh failed: invalid token', { error: err.message });
     const error = new Error('Invalid or expired refresh token');
     error.statusCode = 401;
     error.errorCode = 'INVALID_REFRESH_TOKEN';
     throw error;
   }
 
-  const user = await User.findByPk(payload.sub);
+  const user = userStore.findById(payload.sub);
   if (!user) {
-    logger.warn('Refresh failed: user not found', { userId: payload.sub });
     const error = new Error('Invalid or expired refresh token');
     error.statusCode = 401;
     error.errorCode = 'INVALID_REFRESH_TOKEN';
@@ -127,39 +102,21 @@ const refresh = async (refreshToken) => {
 
   revokedRefreshTokens.add(refreshToken);
   const tokens = generateTokens(user);
-  logger.info('Tokens refreshed', {
-    userId: user.id,
-    email: user.email,
-    durationMs: Date.now() - startedAt,
-  });
   return { ...tokens, expiresIn: 86400 };
 };
 
-/** 
- * Revoke a refresh token. 
- * @param {string} refreshToken 
- */
 const logout = (refreshToken) => {
-  logger.info('User logged out', { tokenPrefix: refreshToken.slice(0, 10) });
   revokedRefreshTokens.add(refreshToken);
 };
 
-/**
- * Get the public profile of a user.
- * @param {string} userId
- * @returns {Promise<object>}
- * @throws {Error} statusCode 404 if user not found
- */
-const getMe = async (userId) => {
-  const user = await User.findByPk(userId);
+const getMe = (userId) => {
+  const user = userStore.findById(userId);
   if (!user) {
-    logger.warn('getMe failed: user not found', { userId });
     const error = new Error('User not found');
     error.statusCode = 404;
     error.errorCode = 'USER_NOT_FOUND';
     throw error;
   }
-  logger.info('User profile fetched', { userId: user.id, email: user.email });
   return toPublicUser(user);
 };
 
