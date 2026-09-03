@@ -1,12 +1,9 @@
 FROM node:24-alpine AS deps
 
-# for solve security Vulnerabilities 
-RUN apk update && apk upgrade --no-cache 
-
 WORKDIR /app
 COPY package*.json ./
 
-RUN ci --omit=dev
+RUN npm ci --omit=dev
 
 
 
