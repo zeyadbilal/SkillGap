@@ -35,6 +35,10 @@ jobs:
               POSTGRES_DB: testdb
             ports:
               - 5432:5432
+          redis:
+            image: redis:7-alpine
+            ports:
+              - 6379:6379
         steps:
             - name: checkout source code
               uses: actions/checkout@v4
@@ -49,6 +53,7 @@ jobs:
             - name: install Dependencies
               run: npm ci
 
+            
             - name: testing with coverage
               run: npm test -- --coverage
               env:
