@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../config/database');
+const { TRACKS } = require('../config/tracks');
 
 const User = sequelize.define(
   'User',
@@ -43,9 +44,14 @@ const User = sequelize.define(
         max: 70,
       },
     },
+    track: {
+      type: DataTypes.STRING(30),
+      validate: {
+        isIn: [TRACKS],
+      },
+    },
   },
   {
-    schema: 'auth',
     tableName: 'users',
     underscored: true,
     timestamps: true,
