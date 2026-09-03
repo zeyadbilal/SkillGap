@@ -1,0 +1,42 @@
+{
+  "Backend Development": {
+    "last_scraped_at": "2026-09-03T12:20:15.876556+00:00",
+    "raw_file_path": "D:\\files\\zeyad.proj\\grad train\\mo2\\all final projecr\\SkillGap\\DataPipeline\\data\\raw\\backend_development_jobs.csv",
+    "row_count": 73
+  },
+  "Frontend Development": {
+    "last_scraped_at": "2026-09-03T12:20:16.180077+00:00",
+    "raw_file_path": "D:\\files\\zeyad.proj\\grad train\\mo2\\all final projecr\\SkillGap\\DataPipeline\\data\\raw\\frontend_development_jobs.csv",
+    "row_count": 87
+  },
+  "Full-Stack Development": {
+    "last_scraped_at": "2026-09-03T12:20:16.476266+00:00",
+    "raw_file_path": "D:\\files\\zeyad.proj\\grad train\\mo2\\all final projecr\\SkillGap\\DataPipeline\\data\\raw\\full-stack_development_jobs.csv",
+    "row_count": 37
+  },
+  "Mobile Development": {
+    "last_scraped_at": "2026-09-03T12:20:16.608584+00:00",
+    "raw_file_path": "D:\\files\\zeyad.proj\\grad train\\mo2\\all final projecr\\SkillGap\\DataPipeline\\data\\raw\\mobile_development_jobs.csv",
+    "row_count": 12
+  },
+  "DevOps & Cloud Engineering": {
+    "last_scraped_at": "2026-09-03T12:20:16.688229+00:00",
+    "raw_file_path": "D:\\files\\zeyad.proj\\grad train\\mo2\\all final projecr\\SkillGap\\DataPipeline\\data\\raw\\devops_&_cloud_engineering_jobs.csv",
+    "row_count": 65
+  },
+  "Network Administration": {
+    "last_scraped_at": "2026-09-03T12:20:16.941561+00:00",
+    "raw_file_path": "D:\\files\\zeyad.proj\\grad train\\mo2\\all final projecr\\SkillGap\\DataPipeline\\data\\raw\\network_administration_jobs.csv",
+    "row_count": 3
+  },
+  "Machine Learning / AI": {
+    "last_scraped_at": "2026-09-03T12:20:17.091304+00:00",
+    "raw_file_path": "D:\\files\\zeyad.proj\\grad train\\mo2\\all final projecr\\SkillGap\\DataPipeline\\data\\raw\\machine_learning___ai_jobs.csv",
+    "row_count": 48
+  },
+  "Network Security": {
+    "last_scraped_at": "2026-09-03T12:20:16.986248+00:00",
+    "raw_file_path": "D:\\files\\zeyad.proj\\grad train\\mo2\\all final projecr\\SkillGap\\DataPipeline\\data\\raw\\network_security_jobs.csv",
+    "row_count": 19
+  }
+}
