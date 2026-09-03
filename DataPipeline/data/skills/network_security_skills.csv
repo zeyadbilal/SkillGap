@@ -1,0 +1,67 @@
+job_id,skill,domain
+arbeitnow:sales-manager-cybersecurity-frankfurt-am-main-305981,siem,Network Security
+arbeitnow:software-security-engineer-frankfurt-am-main-361112,owasp,Network Security
+arbeitnow:software-security-engineer-frankfurt-am-main-361112,zero trust,Network Security
+arbeitnow:senior-software-security-engineer-frankfurt-am-main-161225,owasp,Network Security
+arbeitnow:senior-software-security-engineer-frankfurt-am-main-161225,zero trust,Network Security
+arbeitnow:it-ot-security-architekt-berlin-363919,soc,Network Security
+arbeitnow:it-ot-security-architekt-berlin-363919,owasp,Network Security
+arbeitnow:it-ot-security-architekt-berlin-363919,cissp,Network Security
+arbeitnow:it-ot-security-architekt-berlin-363919,oscp,Network Security
+arbeitnow:it-ot-security-architekt-berlin-363919,zero trust,Network Security
+arbeitnow:it-ot-security-architekt-berlin-363919,iam,Network Security
+arbeitnow:it-ot-security-architekt-berlin-363919,cloud security,Network Security
+arbeitnow:security-engineer-soc-berlin-145924,siem,Network Security
+arbeitnow:security-engineer-soc-berlin-145924,soc,Network Security
+arbeitnow:security-engineer-soc-berlin-145924,owasp,Network Security
+arbeitnow:security-engineer-soc-berlin-145924,python,Network Security
+arbeitnow:security-engineer-soc-berlin-145924,powershell,Network Security
+arbeitnow:security-engineer-soc-berlin-145924,oscp,Network Security
+arbeitnow:security-engineer-soc-berlin-145924,iam,Network Security
+arbeitnow:sales-manager-cybersecurity-frankfurt-am-main-496474,siem,Network Security
+arbeitnow:senior-security-engineer-117600,siem,Network Security
+arbeitnow:senior-security-engineer-117600,penetration testing,Network Security
+arbeitnow:senior-security-engineer-117600,linux,Network Security
+arbeitnow:senior-security-engineer-117600,python,Network Security
+arbeitnow:senior-security-engineer-117600,oscp,Network Security
+arbeitnow:senior-security-engineer-117600,incident response,Network Security
+arbeitnow:senior-security-engineer-117600,forensics,Network Security
+arbeitnow:senior-security-engineer-117600,zero trust,Network Security
+arbeitnow:senior-security-engineer-117600,iam,Network Security
+arbeitnow:senior-security-engineer-117600,cloud security,Network Security
+arbeitnow:remote-principal-cybersecurity-all-genders-186416,soc,Network Security
+arbeitnow:remote-principal-cybersecurity-all-genders-186416,cloud security,Network Security
+arbeitnow:senior-platform-engineer-berlin-67083,owasp,Network Security
+arbeitnow:senior-platform-engineer-berlin-67083,bash,Network Security
+arbeitnow:senior-platform-engineer-berlin-67083,python,Network Security
+arbeitnow:senior-platform-engineer-berlin-67083,incident response,Network Security
+arbeitnow:senior-platform-engineer-berlin-67083,identity management,Network Security
+arbeitnow:senior-platform-engineer-berlin-67083,cloud security,Network Security
+arbeitnow:founding-product-manager-berlin-495450,soc,Network Security
+arbeitnow:founding-product-manager-berlin-495450,python,Network Security
+arbeitnow:founding-product-manager-berlin-495450,iam,Network Security
+arbeitnow:staff-security-engineer-berlin-337361,bash,Network Security
+arbeitnow:staff-security-engineer-berlin-337361,python,Network Security
+arbeitnow:staff-security-engineer-berlin-337361,cloud security,Network Security
+arbeitnow:senior-crowdstrike-falcon-cloud-security-cspm-engineer-cologne-201104,siem,Network Security
+arbeitnow:senior-crowdstrike-falcon-cloud-security-cspm-engineer-cologne-201104,iam,Network Security
+arbeitnow:senior-crowdstrike-falcon-cloud-security-cspm-engineer-cologne-201104,cloud security,Network Security
+arbeitnow:senior-crowdstrike-falcon-cloud-security-cspm-engineer-cologne-201104,azure security,Network Security
+arbeitnow:principal-security-engineer-germany-berlin-458235,iam,Network Security
+arbeitnow:principal-security-engineer-germany-berlin-458235,cloud security,Network Security
+arbeitnow:security-engineer-itsec-mfx-berlin-berlin-434566,tcp/ip,Network Security
+arbeitnow:security-engineer-itsec-mfx-berlin-berlin-434566,vpn,Network Security
+arbeitnow:security-engineer-itsec-mfx-berlin-berlin-434566,linux,Network Security
+arbeitnow:security-engineer-itsec-mfx-berlin-berlin-434566,malware analysis,Network Security
+arbeitnow:security-engineer-itsec-mfx-berlin-berlin-434566,iam,Network Security
+arbeitnow:senior-it-security-manager-network-security-dkb-berlin-472,cloud security,Network Security
+arbeitnow:senior-it-security-manager-network-security-dkb-berlin-472,aws security,Network Security
+arbeitnow:cyber-security-engineer-nordlingen-54128,firewall,Network Security
+arbeitnow:cyber-security-engineer-nordlingen-54128,siem,Network Security
+arbeitnow:cyber-security-engineer-nordlingen-54128,soc,Network Security
+arbeitnow:cyber-security-engineer-nordlingen-54128,tcp/ip,Network Security
+arbeitnow:cyber-security-engineer-nordlingen-54128,dns,Network Security
+arbeitnow:cyber-security-engineer-nordlingen-54128,vpn,Network Security
+arbeitnow:cyber-security-engineer-nordlingen-54128,linux,Network Security
+arbeitnow:cyber-security-engineer-nordlingen-54128,incident response,Network Security
+arbeitnow:cyber-security-engineer-nordlingen-54128,cloud security,Network Security
