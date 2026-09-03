@@ -3,6 +3,10 @@ const { randomUUID } = require('node:crypto');
 
 const app = require('../src/app');
 
+// 1. استدعاء ملفات قاعدة البيانات و Redis (قم بتعديل المسار حسب مشروعك)
+// const prisma = require('../src/prisma'); // مثال إذا كنت تستخدم Prisma
+// const redisClient = require('../src/redis'); // مثال إذا كنت تستخدم Redis
+
 const newUser = (overrides = {}) => ({
   email: `${randomUUID()}@example.com`,
   password: 'Password1',
@@ -23,6 +27,17 @@ const refresh = async (refreshToken) => {
 };
 
 describe('Authentication API', () => {
+
+  afterAll(async () => {
+    await prisma.$disconnect();
+
+    await sequelize.close();
+
+    await pool.end();
+
+     await redisClient.quit();
+  });
+
   describe('POST /auth/register', () => {
     test('registers a user and normalizes the email address', async () => {
       const email = `${randomUUID()}@Example.COM`;
