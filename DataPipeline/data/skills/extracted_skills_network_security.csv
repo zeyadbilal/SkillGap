@@ -1,0 +1,26 @@
+job_id,skill,domain
+1,compliance,Network Security
+1,cybersecurity,Network Security
+1,encryption,Network Security
+1,python,Network Security
+2,compliance,Network Security
+2,iam,Network Security
+2,iso 27001,Network Security
+2,python,Network Security
+2,soc,Network Security
+3,compliance,Network Security
+3,incident response,Network Security
+3,information security,Network Security
+3,iso 27001,Network Security
+3,risk assessment,Network Security
+3,soc,Network Security
+4,compliance,Network Security
+4,encryption,Network Security
+4,risk assessment,Network Security
+5,iam,Network Security
+5,incident response,Network Security
+5,python,Network Security
+6,compliance,Network Security
+6,information security,Network Security
+6,iso 27001,Network Security
+6,soc,Network Security
