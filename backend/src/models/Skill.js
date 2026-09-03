@@ -23,7 +23,6 @@ const Skill = sequelize.define(
     },
   },
   {
-    schema: 'skills',
     tableName: 'skills',
     underscored: true,
     timestamps: true,

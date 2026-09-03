@@ -43,7 +43,6 @@ const SkillTrend = sequelize.define(
     },
   },
   {
-    schema: 'analytics',
     tableName: 'skill_trends',
     underscored: true,
     timestamps: true,
