@@ -3,7 +3,7 @@ const { randomUUID } = require('node:crypto');
 
 const app = require('../src/app');
 
-const sequelize = require('../src/config/database'); 
+const { sequelize } = require('../src/models');
 
 const newUser = (overrides = {}) => ({
   email: `${randomUUID()}@example.com`,
