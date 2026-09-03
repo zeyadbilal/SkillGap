@@ -1,58 +1,42 @@
 {
   "Backend Development": {
-    "last_scraped_at": "2026-09-02T19:08:46+00:00",
-    "raw_file_path": "data/raw/raw_jobs_backend_development.csv",
-    "clean_file_path": "data/clean/clean_jobs_backend_development.csv",
-    "skills_file_path": "data/skills/extracted_skills_backend_development.csv",
-    "frequency_file_path": "data/skills/skill_frequency_backend_development.csv"
+    "last_scraped_at": "2026-09-03T12:20:15.876556+00:00",
+    "raw_file_path": "D:\\files\\zeyad.proj\\grad train\\mo2\\all final projecr\\SkillGap\\DataPipeline\\data\\raw\\backend_development_jobs.csv",
+    "row_count": 73
   },
   "Frontend Development": {
-    "last_scraped_at": "2026-09-02T19:08:46+00:00",
-    "raw_file_path": "data/raw/raw_jobs_frontend_development.csv",
-    "clean_file_path": "data/clean/clean_jobs_frontend_development.csv",
-    "skills_file_path": "data/skills/extracted_skills_frontend_development.csv",
-    "frequency_file_path": "data/skills/skill_frequency_frontend_development.csv"
+    "last_scraped_at": "2026-09-03T12:20:16.180077+00:00",
+    "raw_file_path": "D:\\files\\zeyad.proj\\grad train\\mo2\\all final projecr\\SkillGap\\DataPipeline\\data\\raw\\frontend_development_jobs.csv",
+    "row_count": 87
   },
   "Full-Stack Development": {
-    "last_scraped_at": "2026-09-02T19:08:47+00:00",
-    "raw_file_path": "data/raw/raw_jobs_full_stack_development.csv",
-    "clean_file_path": "data/clean/clean_jobs_full_stack_development.csv",
-    "skills_file_path": "data/skills/extracted_skills_full_stack_development.csv",
-    "frequency_file_path": "data/skills/skill_frequency_full_stack_development.csv"
+    "last_scraped_at": "2026-09-03T12:20:16.476266+00:00",
+    "raw_file_path": "D:\\files\\zeyad.proj\\grad train\\mo2\\all final projecr\\SkillGap\\DataPipeline\\data\\raw\\full-stack_development_jobs.csv",
+    "row_count": 37
   },
   "Mobile Development": {
-    "last_scraped_at": "2026-09-02T19:08:47+00:00",
-    "raw_file_path": "data/raw/raw_jobs_mobile_development.csv",
-    "clean_file_path": "data/clean/clean_jobs_mobile_development.csv",
-    "skills_file_path": "data/skills/extracted_skills_mobile_development.csv",
-    "frequency_file_path": "data/skills/skill_frequency_mobile_development.csv"
+    "last_scraped_at": "2026-09-03T12:20:16.608584+00:00",
+    "raw_file_path": "D:\\files\\zeyad.proj\\grad train\\mo2\\all final projecr\\SkillGap\\DataPipeline\\data\\raw\\mobile_development_jobs.csv",
+    "row_count": 12
   },
   "DevOps & Cloud Engineering": {
-    "last_scraped_at": "2026-09-02T19:08:47+00:00",
-    "raw_file_path": "data/raw/raw_jobs_devops_cloud_engineering.csv",
-    "clean_file_path": "data/clean/clean_jobs_devops_cloud_engineering.csv",
-    "skills_file_path": "data/skills/extracted_skills_devops_cloud_engineering.csv",
-    "frequency_file_path": "data/skills/skill_frequency_devops_cloud_engineering.csv"
+    "last_scraped_at": "2026-09-03T12:20:16.688229+00:00",
+    "raw_file_path": "D:\\files\\zeyad.proj\\grad train\\mo2\\all final projecr\\SkillGap\\DataPipeline\\data\\raw\\devops_&_cloud_engineering_jobs.csv",
+    "row_count": 65
   },
   "Network Administration": {
-    "last_scraped_at": "2026-09-02T19:08:47+00:00",
-    "raw_file_path": "data/raw/raw_jobs_network_administration.csv",
-    "clean_file_path": "data/clean/clean_jobs_network_administration.csv",
-    "skills_file_path": "data/skills/extracted_skills_network_administration.csv",
-    "frequency_file_path": "data/skills/skill_frequency_network_administration.csv"
-  },
-  "Network Security": {
-    "last_scraped_at": "2026-09-02T19:08:47+00:00",
-    "raw_file_path": "data/raw/raw_jobs_network_security.csv",
-    "clean_file_path": "data/clean/clean_jobs_network_security.csv",
-    "skills_file_path": "data/skills/extracted_skills_network_security.csv",
-    "frequency_file_path": "data/skills/skill_frequency_network_security.csv"
+    "last_scraped_at": "2026-09-03T12:20:16.941561+00:00",
+    "raw_file_path": "D:\\files\\zeyad.proj\\grad train\\mo2\\all final projecr\\SkillGap\\DataPipeline\\data\\raw\\network_administration_jobs.csv",
+    "row_count": 3
   },
   "Machine Learning / AI": {
-    "last_scraped_at": "2026-09-02T19:08:47+00:00",
-    "raw_file_path": "data/raw/raw_jobs_machine_learning_ai.csv",
-    "clean_file_path": "data/clean/clean_jobs_machine_learning_ai.csv",
-    "skills_file_path": "data/skills/extracted_skills_machine_learning_ai.csv",
-    "frequency_file_path": "data/skills/skill_frequency_machine_learning_ai.csv"
+    "last_scraped_at": "2026-09-03T12:20:17.091304+00:00",
+    "raw_file_path": "D:\\files\\zeyad.proj\\grad train\\mo2\\all final projecr\\SkillGap\\DataPipeline\\data\\raw\\machine_learning___ai_jobs.csv",
+    "row_count": 48
+  },
+  "Network Security": {
+    "last_scraped_at": "2026-09-03T12:20:16.986248+00:00",
+    "raw_file_path": "D:\\files\\zeyad.proj\\grad train\\mo2\\all final projecr\\SkillGap\\DataPipeline\\data\\raw\\network_security_jobs.csv",
+    "row_count": 19
   }
 }

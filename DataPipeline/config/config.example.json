@@ -1,0 +1,7 @@
+{
+  "sources": {
+    "remotive": {"enabled": true},
+    "remoteok": {"enabled": true},
+    "arbeitnow": {"enabled": true, "max_pages": 20, "backfill_max_pages": 50}
+  }
+}
