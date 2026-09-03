@@ -6,7 +6,7 @@ on:
             - "main"
             - abdelrahman-deployment
         paths:
-        - 'backend/**'
+        - '**/**'
     pull_request:
         branches:
             - "main"
