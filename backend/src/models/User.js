@@ -36,24 +36,12 @@ const User = sequelize.define(
     },
     yearsExperience: {
       type: DataTypes.INTEGER,
+      defaultValue: 0,
       field: 'years_experience',
       validate: {
         min: 0,
         max: 70,
       },
-    },
-    avatarUrl: {
-      type: DataTypes.STRING(500),
-      field: 'avatar_url',
-    },
-    isActive: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: true,
-      field: 'is_active',
-    },
-    lastLogin: {
-      type: DataTypes.DATE,
-      field: 'last_login',
     },
   },
   {
@@ -62,7 +50,7 @@ const User = sequelize.define(
     underscored: true,
     timestamps: true,
     createdAt: 'created_at',
-    updatedAt: 'updated_at',
+    updatedAt: false,
   }
 );
 
