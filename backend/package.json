@@ -5,7 +5,7 @@
   "main": "src/app.js",
   "scripts": {
     "start": "node src/app.js",
-    "dev": "nodemon src/app.js",
+    "dev": "NODE_ENV=development nodemon src/app.js",
     "test": "NODE_ENV=test jest --runInBand",
     "test:coverage": "jest --coverage"
   },
@@ -26,6 +26,7 @@
     "pg-hstore": "^2.3.4",
     "redis": "^6.2.1",
     "sequelize": "^6.37.8",
+    "swagger-ui-express": "^5.0.1",
     "uuid": "^9.0.1",
     "winston": "^3.19.0"
   },
