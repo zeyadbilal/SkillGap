@@ -69,7 +69,7 @@ jobs:
             - name: Dependency Security Scan (Application Level)
               run: npm audit --audit-level=high
 
-    # build image for scaning
+    # build image for scaning 
     container-build:
         name: build-scan docker image
         runs-on: ubuntu-latest
