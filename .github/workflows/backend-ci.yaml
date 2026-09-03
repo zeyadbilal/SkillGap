@@ -88,6 +88,8 @@ jobs:
                   push: false
                   load: true
                   tags: backend-service:ci-test
+                  cache-from: type=gha
+                  cache-to: type=gha,mode=max
 
             - name: Scan Image Vulnerabilities
               uses: aquasecurity/trivy-action@v0.36.0
