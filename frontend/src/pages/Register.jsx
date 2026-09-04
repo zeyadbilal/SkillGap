@@ -199,7 +199,7 @@ function Register() {
                 onChange={(event) => setGraduationYear(event.target.value)}
                 placeholder="2027"
                 min="2000"
-                max="2027"
+                max={new Date().getFullYear() + 1}
                 required
                 className="w-full px-4 py-3 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-500"
               />
