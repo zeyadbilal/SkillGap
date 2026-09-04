@@ -27,6 +27,12 @@ COPY --chown=node:node docs ./docs
 
 ARG DEFAULT_PORT=5000
 ENV PORT=$DEFAULT_PORT
+
+# env for database and redis
+ENV DATABASE_URL=""
+ENV REDIS_URL=""
+
+
 EXPOSE $PORT
 
 # run node with pid 1 to solve SIGTERM

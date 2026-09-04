@@ -21,6 +21,9 @@ USER nginx
 
 ARG DEFAULT_PORT=8080
 ENV PORT=$DEFAULT_PORT
+
+ENV BACKEND_URL=http://localhost:5000
+
 EXPOSE $PORT
 
 CMD ["nginx", "-g", "daemon off;"]
