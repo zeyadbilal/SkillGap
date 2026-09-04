@@ -1,6 +1,20 @@
 import { Link } from "react-router-dom";
 
 function Dashboard() {
+  // Get the logged-in user saved during login
+  const storedUser = localStorage.getItem("user");
+
+  let user = null;
+
+  try {
+    user = storedUser ? JSON.parse(storedUser) : null;
+  } catch {
+    user = null;
+  }
+
+  // Get only the user's first name
+  const firstName = user?.fullName?.trim().split(/\s+/)[0] || "User";
+
   return (
     <div className="bg-[#f5f5f0] min-h-screen text-slate-950">
       {/* ================= TOP HERO ================= */}
@@ -18,7 +32,9 @@ function Dashboard() {
                 <br />
                 BACK,
                 <br />
-                <span className="text-blue-500">AHMED.</span>
+                <span className="text-blue-500">
+                  {firstName.toUpperCase()}.
+                </span>
               </h1>
 
               <p className="text-slate-400 max-w-lg text-lg mt-8 leading-relaxed">
