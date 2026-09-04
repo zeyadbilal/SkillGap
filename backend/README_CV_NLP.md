@@ -64,7 +64,7 @@ API: POST /api/v1/recommendations/analyze
 Request JSON body (fields):
 - cvText (string, required, min 20 chars) — raw CV text
 - track (optional string) — suggested track to bias recommendations
-- topSkillsLimit (integer, optional, default 12) — number of top detected skills to return
+- topSkillsLimit (integer, optional, default 12) — number of top market skills to compare against when computing gaps/match score
 - roadmapMonths (integer, optional, default 3) — months to build roadmap for
 - skillsPerMonth (integer, optional, default 3)
 
