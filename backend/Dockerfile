@@ -3,7 +3,7 @@ FROM node:24-alpine AS deps
 WORKDIR /app
 COPY package*.json ./
 
-RUN npm ci --omit=dev
+RUN --mount=type=cache,target=/root/.npm npm ci --omit=dev
 
 
 # -------------------

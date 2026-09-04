@@ -47,10 +47,17 @@ jobs:
               uses: actions/setup-node@v4
               with:
                   node-version: ${{matrix.node-version}}
-                  cache: "npm"
-                  cache-dependency-path: "backend/package-lock.json"
+            - name: Cache node_modules
+              uses: actions/cache@v4
+              id: npm-cache
+              with:
+                path: backend/node_modules
+                key: ${{ runner.os }}-${{ matrix.node-version }}-node-modules-${{ hashFiles('backend/package-lock.json') }}
+                restore-keys: |
+                  ${{ runner.os }}-${{ matrix.node-version }}-node-modules-
 
             - name: install Dependencies
+              if: steps.npm-cache.outputs.cache-hit != 'true'
               run: npm ci
 
             
