@@ -16,6 +16,9 @@ RUN apk update && apk upgrade --no-cache
 USER node 
 WORKDIR /app
 
+# Copy only the necessary files for production 
+# We use --chown=node:node instead of COPY . . to avoid creating an extra layer with root ownership.
+# Using a separate 'RUN chown' command would duplicate the files in a new layer, significantly increasing the image size.
 COPY --from=deps --chown=node:node /app/node_modules ./node_modules
 COPY --chown=node:node package.json ./
 COPY --chown=node:node src ./src
