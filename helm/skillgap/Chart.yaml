@@ -1,0 +1,6 @@
+apiVersion: v2
+name: skillgap
+description: SkillGap job-market skill advisor
+type: application
+version: 0.1.0
+appVersion: "1.0.0"

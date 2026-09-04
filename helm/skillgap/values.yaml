@@ -1,0 +1,52 @@
+replicaCount:
+  backend: 1
+  frontend: 1
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+backend:
+  image:
+    repository: skillgap-backend
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 5000
+  resources: {}
+  env:
+    nodeEnv: production
+    logLevel: info
+    pgPoolMax: "20"
+    pgPoolMin: "0"
+
+frontend:
+  image:
+    repository: skillgap-frontend
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 8080
+  resources: {}
+
+external:
+  # Railway PostgreSQL connection string, for example postgres://user:password@host:port/db
+  postgresUrl: "postgresql://postgres:LZnTIfohYPjuPwlJJniEXlBlvoyElLXv@hayabusa.proxy.rlwy.net:35151/railway"
+  # Railway Redis connection string, for example rediss://default:password@host:port
+  redisUrl: "http://localhost"
+
+secrets:
+  jwtSecret: "gsbadgsgbaGSFGASFGSDG"
+
+ingress:
+  enabled: false
+  className: nginx
+  annotations: {}
+  hosts:
+    - host: skillgap.local
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []

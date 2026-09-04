@@ -32,7 +32,7 @@ ENV NODE_ENV=production
 # env for database and redis and jwt secret
 ENV DATABASE_URL=""
 ENV REDIS_URL=""
-ENV JWT_SECRET="
+ENV JWT_SECRET=""
 
 EXPOSE $PORT
 
