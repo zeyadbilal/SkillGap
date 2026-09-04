@@ -54,8 +54,8 @@ Running the extractor directly
 
 - Example output (excerpt):
   {
-    "detectedSkills": [{"skill":"node.js","count":3,"proficiency":"Intermediate"}, ...],
-    "inferredTrack":"Backend / Fullstack",
+    "detectedSkills": [{"skill":"node.js","tracks":["Backend Development"],"mentions":3,"confidence":0.9,"proficiencyLevel":"Intermediate"}, ...],
+    "inferredTrack":"Backend Development",
     "textLength":1200
   }
 
