@@ -6,7 +6,6 @@ COPY package*.json ./
 RUN npm ci --omit=dev
 
 
-
 # -------------------
 
 FROM node:24-alpine AS prod
