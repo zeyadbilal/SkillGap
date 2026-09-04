@@ -78,11 +78,8 @@ Example request:
 
 Example response (simplified):
 {
-  "inferredTrack": "Backend / Fullstack",
-  "matchScore": 42.7,
-  "detectedSkills": [ {"skill":"node.js","count":5,"proficiency":"Advanced","marketScore":86}, ... ],
-  "skillGaps": ["Docker","Kubernetes","Redis"],
-  "roadmap": {"month_1": ["Docker","Redis"], "month_2": ["Kubernetes"] }
+  "success": true,
+  "data": { "profileSummary": { "track": "Backend Development", "matchScore": 42, ... }, "currentSkills": [ ... ], "skillGaps": [ ... ], "learningRoadmap": [ ... ], "pipeline": { "extractor": "python-spacy" } }
 }
 
 Behavior notes
