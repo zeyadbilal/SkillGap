@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { loginUser } from "../api/api";
 
 function Login() {
   const navigate = useNavigate();
@@ -7,13 +8,38 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (event) => {
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // Temporary frontend login
-    // Later this will call the backend API.
+    setError("");
+    setLoading(true);
 
-    navigate("/dashboard");
+    try {
+      const response = await loginUser({
+        email,
+        password,
+      });
+
+      console.log("Login successful:", response);
+
+      const { accessToken, refreshToken } = response.data.tokens;
+
+      // Store authentication tokens
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("refreshToken", refreshToken);
+
+      // Store user information
+      localStorage.setItem("user", JSON.stringify(response.data.user));
+
+      navigate("/dashboard");
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -56,6 +82,8 @@ function Login() {
           <p className="text-slate-500 mt-3">Continue your career journey.</p>
 
           <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+            {/* Email */}
+
             <div>
               <label className="block text-sm font-semibold mb-2">Email</label>
 
@@ -68,6 +96,8 @@ function Login() {
                 className="w-full px-4 py-3 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
+
+            {/* Password */}
 
             <div>
               <div className="flex justify-between mb-2">
@@ -88,11 +118,22 @@ function Login() {
               />
             </div>
 
+            {/* Error */}
+
+            {error && (
+              <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-xl text-sm">
+                {error}
+              </div>
+            )}
+
+            {/* Submit */}
+
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-4 rounded-xl font-bold hover:bg-blue-700 transition"
+              disabled={loading}
+              className="w-full bg-blue-600 text-white py-4 rounded-xl font-bold hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Login →
+              {loading ? "Logging in..." : "Login →"}
             </button>
           </form>
 
