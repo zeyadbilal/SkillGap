@@ -27,11 +27,12 @@ COPY --chown=node:node docs ./docs
 
 ARG DEFAULT_PORT=5000
 ENV PORT=$DEFAULT_PORT
+ENV NODE_ENV=production
 
-# env for database and redis
+# env for database and redis and jwt secret
 ENV DATABASE_URL=""
 ENV REDIS_URL=""
-
+ENV JWT_SECRET="
 
 EXPOSE $PORT
 
