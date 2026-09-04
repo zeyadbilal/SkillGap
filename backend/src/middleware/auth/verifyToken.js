@@ -12,7 +12,11 @@ const verifyToken = (req, res, next) => {
   const token = authHeader.split(' ')[1];
   try {
     const payload = tokenService.verifyAccessToken(token);
-    req.user = { id: payload.sub, email: payload.email };
+    req.user = {
+      id: payload.sub,
+      email: payload.email,
+      fieldOfStudy: payload.fieldOfStudy,
+    };
     next();
   } catch (err) {
     const error = new Error('Unauthorized');

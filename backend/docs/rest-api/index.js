@@ -8,7 +8,7 @@ const openApiDocument = {
     title: 'SkillGap API',
     version: '1.0.0',
     description:
-      'Job-Market Skill-Gap Advisor API — register, authenticate, and manage user accounts.',
+      'Job-Market Skill-Gap Advisor API — register, authenticate, analyze CVs, and generate skill-gap recommendations.',
   },
   servers: [
     {
@@ -18,6 +18,7 @@ const openApiDocument = {
   ],
   tags: [
     { name: 'Auth', description: 'User registration and authentication' },
+    { name: 'Recommendations', description: 'CV analysis and skill-gap recommendations' },
     { name: 'System', description: 'System-level endpoints' },
   ],
   paths: modulePaths,
