@@ -3,8 +3,8 @@ CV NLP integration
 This branch adds an optional Python spaCy-based CV extractor and integrates it into the Node recommendation pipeline.
 
 How it works
-- backend/scripts/spacy_extractor.py: Python script that reads CV text from stdin and returns JSON with detectedSkills and inferredTrack.
-- backend/src/services/pyNlpService.js: Node bridge that calls `conda run -n <env> python backend/scripts/spacy_extractor.py` and returns parsed JSON.
+- model/nlp/spacy_extractor.py: Python script that reads CV text from stdin and returns JSON with detectedSkills and inferredTrack.
+- backend/src/services/pyNlpService.js: Node bridge that calls `conda run -n <env> python model/nlp/spacy_extractor.py` and returns parsed JSON.
 - recommendationService prefers the Python extractor when available and falls back to the existing JS extractor (marketData.extractSkillsFromText).
 
 Running locally
@@ -15,7 +15,7 @@ Running locally
    conda install -n myproject -c conda-forge spacy scikit-learn click -y
    conda run -n myproject python -m spacy download en_core_web_sm
 3. Test the Python extractor:
-   cat my_cv.txt | conda run -n myproject python backend/scripts/spacy_extractor.py
+   cat my_cv.txt | conda run -n myproject python model/nlp/spacy_extractor.py
 
 Running Node tests
 - From backend/ run:

@@ -2,7 +2,8 @@ const { spawn } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
-const SCRIPT_PATH = path.join(__dirname, '..', '..', 'scripts', 'spacy_extractor.py');
+const SCRIPT_PATH = process.env.CV_NLP_SCRIPT_PATH
+  || path.join(__dirname, '..', '..', '..', 'model', 'nlp', 'spacy_extractor.py');
 const CONDA_ENV = process.env.CV_NLP_CONDA_ENV || 'myproject';
 
 function isCondaAvailable() {
