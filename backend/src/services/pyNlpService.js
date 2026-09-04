@@ -4,22 +4,47 @@ const path = require('path');
 
 const SCRIPT_PATH = process.env.CV_NLP_SCRIPT_PATH
   || path.join(__dirname, '..', '..', '..', 'model', 'nlp', 'spacy_extractor.py');
-const CONDA_ENV = process.env.CV_NLP_CONDA_ENV || 'myproject';
+const CONDA_ENV = process.env.CV_NLP_CONDA_ENV;
+const PYTHON_BIN = process.env.CV_NLP_PYTHON_BIN;
 
-function isCondaAvailable() {
-  const check = spawnSync('conda', ['--version'], { stdio: 'ignore' });
+function commandExists(command) {
+  const check = spawnSync(command, ['--version'], { stdio: 'ignore' });
   return check.status === 0;
 }
 
+function getPythonCommand() {
+  if (CONDA_ENV) {
+    return {
+      command: 'conda',
+      args: ['run', '-n', CONDA_ENV, 'python', SCRIPT_PATH],
+      missingCode: 'CONDA_NOT_FOUND',
+      missingMessage: 'conda is not available',
+    };
+  }
+
+  const pythonCommand = PYTHON_BIN
+    || (commandExists('python3') ? 'python3' : 'python');
+
+  return {
+    command: pythonCommand,
+    args: [SCRIPT_PATH],
+    missingCode: 'PYTHON_NOT_FOUND',
+    missingMessage: `${pythonCommand} is not available`,
+  };
+}
+
 function isAvailable() {
-  return fs.existsSync(SCRIPT_PATH) && isCondaAvailable();
+  if (!fs.existsSync(SCRIPT_PATH)) return false;
+  return commandExists(getPythonCommand().command);
 }
 
 function extract(cvText, timeoutMs = 30000) {
   return new Promise((resolve, reject) => {
-    if (!isCondaAvailable()) {
-      const err = new Error('conda is not available');
-      err.code = 'CONDA_NOT_FOUND';
+    const pythonCommand = getPythonCommand();
+
+    if (!commandExists(pythonCommand.command)) {
+      const err = new Error(pythonCommand.missingMessage);
+      err.code = pythonCommand.missingCode;
       return reject(err);
     }
     if (!fs.existsSync(SCRIPT_PATH)) {
@@ -28,7 +53,7 @@ function extract(cvText, timeoutMs = 30000) {
       return reject(err);
     }
 
-    const proc = spawn('conda', ['run', '-n', CONDA_ENV, 'python', SCRIPT_PATH], {
+    const proc = spawn(pythonCommand.command, pythonCommand.args, {
       stdio: ['pipe', 'pipe', 'pipe'],
     });
 
@@ -74,4 +99,5 @@ function extract(cvText, timeoutMs = 30000) {
 module.exports = {
   extract,
   isAvailable,
+  getPythonCommand,
 };
