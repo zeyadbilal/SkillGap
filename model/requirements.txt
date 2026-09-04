@@ -1,0 +1,3 @@
+pandas
+requests
+spacy>=3.7,<4
