@@ -57,7 +57,7 @@ API documentation is auto-served **only in development mode** (`NODE_ENV=develop
 
 | URL                              | What it is                          |
 |----------------------------------|-------------------------------------|
-| `http://localhost:5000/docs/api` | Interactive Swagger UI              |
+| `http://localhost:5000/docs`     | Interactive Swagger UI              |
 | `http://localhost:5000/docs/specs.json` | Raw OpenAPI 3.0 JSON document |
 
 The Swagger UI shows every wired API route, its method, path, request parameters/bodies, and response schemas. You can try requests directly — e.g. register a user, then paste the returned access token via the **Authorize** button (format `Bearer <accessToken>`) to call protected routes like `GET /auth/me`.
@@ -90,14 +90,15 @@ It is served by `backend/src/docs-router.js`, mounted at `/docs` in `app.js` onl
 
 ### Currently Wired Routes
 
-| Method | Path             | Auth   | Description                       |
-|--------|------------------|--------|-----------------------------------|
-| `GET`  | `/health`        | No     | Health check                      |
-| `POST` | `/auth/register` | No     | Register a new user               |
-| `POST` | `/auth/login`    | No     | Log a user in                     |
-| `POST` | `/auth/refresh`  | No     | Refresh (rotate) tokens           |
-| `POST` | `/auth/logout`   | No     | Log out and revoke the token      |
-| `GET`  | `/auth/me`       | Bearer | Get the current user's profile    |
+| Method | Path                     | Auth   | Description                       |
+|--------|--------------------------|--------|-----------------------------------|
+| `GET`  | `/health`                | No     | Health check                      |
+| `POST` | `/auth/register`         | No     | Register a new user               |
+| `POST` | `/auth/login`            | No     | Log a user in                     |
+| `POST` | `/auth/refresh`          | No     | Refresh (rotate) tokens           |
+| `POST` | `/auth/logout`           | No     | Log out and revoke the token      |
+| `GET`  | `/auth/me`               | Bearer | Get the current user's profile    |
+| `POST` | `/recommendations/analyze` | Bearer | Analyze a CV and get skill-gap recommendations |
 
 ## Docker
 
