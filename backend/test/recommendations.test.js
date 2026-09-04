@@ -1,4 +1,10 @@
 const request = require('supertest');
+
+jest.mock('../src/services/pyNlpService', () => ({
+  isAvailable: jest.fn(() => false),
+  extract: jest.fn(),
+}));
+
 const app = require('../src/app');
 
 describe('Recommendations API', () => {
