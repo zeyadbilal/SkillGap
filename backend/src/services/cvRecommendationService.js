@@ -122,21 +122,29 @@ async function detectSkills(cvText) {
     };
   }
 
-  const pythonResult = await pyNlpService.extract(cvText);
-  const detectedSkills = Array.isArray(pythonResult.detectedSkills)
-    ? pythonResult.detectedSkills
-    : [];
-  if (!detectedSkills.length) {
-    return {
-      detectedSkills: extractSkillsFromText(cvText),
-      extractor: 'marketData-regex-empty-python',
-    };
-  }
+    try {
+      const pythonResult = await pyNlpService.extract(cvText);
+      const detectedSkills = Array.isArray(pythonResult.detectedSkills)
+        ? pythonResult.detectedSkills
+        : [];
 
-  return {
-    detectedSkills,
-    extractor: 'python-spacy',
-  };
+      if (detectedSkills.length) {
+        return {
+          detectedSkills,
+          extractor: 'python-spacy',
+        };
+      }
+
+      return {
+        detectedSkills: extractSkillsFromText(cvText),
+        extractor: 'marketData-regex-empty-python',
+      };
+    } catch (error) {
+      return {
+        detectedSkills: extractSkillsFromText(cvText),
+        extractor: 'marketData-regex-python-error',
+      };
+    }
 }
 
 async function analyzeCv(input) {
