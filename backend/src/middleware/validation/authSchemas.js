@@ -43,6 +43,5 @@ module.exports = {
   fieldsOfStudy,
   registerSchema,
   loginSchema,
-  refreshSchema, //added
-  fieldsOfStudy,
+  refreshSchema,
 };
