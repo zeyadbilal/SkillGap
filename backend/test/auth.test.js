@@ -3,6 +3,8 @@ const { randomUUID } = require('node:crypto');
 
 const app = require('../src/app');
 
+const { sequelize } = require('../src/models');
+
 const newUser = (overrides = {}) => ({
   email: `${randomUUID()}@example.com`,
   password: 'Password1',
@@ -14,6 +16,11 @@ const newUser = (overrides = {}) => ({
 
 const register = async (overrides = {}) => {
   const response = await request(app).post('/auth/register').send(newUser(overrides));
+  
+  if (response.status !== 201 && response.status !== 200) {
+    console.error('Register API Failed:', response.body);
+  }
+  
   return response.body.data;
 };
 
@@ -23,6 +30,15 @@ const refresh = async (refreshToken) => {
 };
 
 describe('Authentication API', () => {
+
+  beforeAll(async () => {
+    await sequelize.sync({ force: true });
+  });
+
+  afterAll(async () => {
+    await sequelize.close();
+  });
+
   describe('POST /auth/register', () => {
     test('registers a user and normalizes the email address', async () => {
       const email = `${randomUUID()}@Example.COM`;
