@@ -19,9 +19,9 @@ app.use(cors());
 app.use(morgan("dev"));
 app.use(express.json());
 
-if (process.env.NODE_ENV === 'development') {
-  const docsRouter = require('./docs-router');
-  app.use('/docs', docsRouter);
+if (process.env.NODE_ENV === "development") {
+  const docsRouter = require("./docs-router");
+  app.use("/docs", docsRouter);
 }
 
 app.use("/", routes);
@@ -39,12 +39,13 @@ app.use(errorHandler);
 const PORT = config.port;
 if (require.main === module) {
   (async () => {
-    await sequelize.sync({ alter: true });
+    //await sequelize.sync({ alter: true }); commented
+    await sequelize.authenticate(); //added
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
     });
   })().catch((err) => {
-    console.error('Failed to start server:', err.message);
+    console.error("Failed to start server:", err.message);
     process.exit(1);
   });
 }
