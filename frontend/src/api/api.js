@@ -1,5 +1,4 @@
-const API_URL = "http://localhost:5000";
-
+const API_URL = import.meta.env.VITE_API_URL || "/api";
 async function request(endpoint, options = {}) {
   const response = await fetch(`${API_URL}${endpoint}`, {
     ...options,
@@ -48,17 +47,19 @@ export const getCurrentUser = () => {
 };
 
 // Refresh token
-export const refreshAccessToken = () => {
+export const refreshAccessToken = async () => {
   const refreshToken = localStorage.getItem("refreshToken");
 
-  return request("/auth/refresh", {
+  const data = await request("/auth/refresh", {
     method: "POST",
-    body: JSON.stringify({
-      refreshToken,
-    }),
+    body: JSON.stringify({ refreshToken }),
   });
-};
 
+  localStorage.setItem("accessToken", data.data.tokens.accessToken);
+  localStorage.setItem("refreshToken", data.data.tokens.refreshToken);
+
+  return data;
+};
 // Logout
 export const logoutUser = () => {
   const refreshToken = localStorage.getItem("refreshToken");
