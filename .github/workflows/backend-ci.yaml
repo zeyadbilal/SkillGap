@@ -4,6 +4,7 @@ on:
     push:
         branches:
             - "main"
+            - abdelrahman-deployment
         paths:
         - 'backend/**'
     pull_request:
@@ -23,6 +24,21 @@ jobs:
         strategy:
             matrix:
                 node-version: [20.x, 22.x, 24.x, 26.x]
+  
+
+        services:
+          postgres:
+            image: postgres:15-alpine
+            env:
+              POSTGRES_USER: testuser
+              POSTGRES_PASSWORD: testpassword
+              POSTGRES_DB: testdb
+            ports:
+              - 5432:5432
+          redis:
+            image: redis:7-alpine
+            ports:
+              - 6379:6379
         steps:
             - name: checkout source code
               uses: actions/checkout@v4
@@ -31,14 +47,25 @@ jobs:
               uses: actions/setup-node@v4
               with:
                   node-version: ${{matrix.node-version}}
-                  cache: "npm"
-                  cache-dependency-path: "backend/package-lock.json"
+            - name: Cache node_modules
+              uses: actions/cache@v4
+              id: npm-cache
+              with:
+                path: backend/node_modules
+                key: ${{ runner.os }}-${{ matrix.node-version }}-node-modules-${{ hashFiles('backend/package-lock.json') }}
+                restore-keys: |
+                  ${{ runner.os }}-${{ matrix.node-version }}-node-modules-
 
             - name: install Dependencies
+              if: steps.npm-cache.outputs.cache-hit != 'true'
               run: npm ci
 
+            
             - name: testing with coverage
-              run: npm test -- --coverage
+              run: npm test -- --coverage --detectOpenHandles --forceExit
+              env:
+                DATABASE_URL: postgres://testuser:testpassword@localhost:5432/testdb
+                REDIS_URL: redis://localhost:6379
 
             - name: Upload Coverage Report
               uses: actions/upload-artifact@v4
@@ -49,7 +76,7 @@ jobs:
             - name: Dependency Security Scan (Application Level)
               run: npm audit --audit-level=high
 
-    # build image for scaning
+    # build image for scaning 
     container-build:
         name: build-scan docker image
         runs-on: ubuntu-latest
@@ -69,7 +96,9 @@ jobs:
                   push: false
                   load: true
                   tags: backend-service:ci-test
-
+                  cache-from: type=gha
+                  cache-to: type=gha,mode=max
+                  
             - name: Scan Image Vulnerabilities
               uses: aquasecurity/trivy-action@v0.36.0
               with:
