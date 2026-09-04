@@ -25,6 +25,22 @@ MODEL_SERVICE_URL=http://127.0.0.1:5001 npm start
 
 `MODEL_SERVICE_TIMEOUT_MS` controls the backend HTTP timeout and defaults to 30 seconds.
 
+## Docker
+
+Build the model image from the repository root:
+
+```bash
+docker build -f model/Dockerfile -t skillgap-model .
+```
+
+Run it locally:
+
+```bash
+docker run --rm -p 5001:5001 skillgap-model
+```
+
+The image installs `model/requirements.txt`, downloads `en_core_web_sm`, and copies the `DataPipeline` skill dictionary/frequency files needed by the engine.
+
 ## API
 
 `POST /analyze` accepts the same analysis body already validated by Express:

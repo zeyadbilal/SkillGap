@@ -37,4 +37,4 @@ app = create_app()
 
 
 if __name__ == "__main__":
-    app.run(host="127.0.0.1", port=int(os.getenv("MODEL_PORT", "5001")))
+    app.run(host=os.getenv("MODEL_HOST", "0.0.0.0"), port=int(os.getenv("MODEL_PORT", "5001")))
