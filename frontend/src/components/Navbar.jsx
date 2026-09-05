@@ -96,6 +96,7 @@ function Navbar() {
             </>
           )}
 
+
           {/* ================= LOGGED OUT ================= */}
 
           {!isLoggedIn && (

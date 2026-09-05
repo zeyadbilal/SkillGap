@@ -12,6 +12,14 @@ except ImportError:  # pragma: no cover - exercised in deployments without spaCy
     spacy = None
 
 
+class CvAnalysisError(Exception):
+    """Raised when the uploaded document cannot be analyzed as a CV."""
+
+    def __init__(self, message, error_code="NO_SKILLS_DETECTED"):
+        super().__init__(message)
+        self.error_code = error_code
+
+
 REPO_ROOT = Path(__file__).resolve().parents[2]
 SKILL_DICTIONARY_PATH = REPO_ROOT / "DataPipeline" / "config" / "skills_dictionary.json"
 SKILLS_DATA_DIR = REPO_ROOT / "DataPipeline" / "data" / "skills"
@@ -448,6 +456,13 @@ def analyze_cv(input_data):
         raise ValueError("cvText must be at least 20 characters")
 
     detected_skills, extractor = detect_skills(cv_text)
+
+    if not detected_skills:
+        raise CvAnalysisError(
+            "No skills could be detected in this document. It does not appear to be a CV; please upload your resume.",
+            "NO_SKILLS_DETECTED",
+        )
+
     selected_track = input_data.get("track") or infer_track(detected_skills)
     market_skills = get_market_skills(selected_track, MARKET_SKILLS_LIMIT)
     current_skills = summarize_current_skills(detected_skills, cv_text)
