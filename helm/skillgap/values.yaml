@@ -3,6 +3,23 @@ replicaCount:
   frontend: 1
   model: 1
 
+autoscaling:
+  backend:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 3
+    targetCPUUtilizationPercentage: 70
+  frontend:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 3
+    targetCPUUtilizationPercentage: 70
+  model:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 3
+    targetCPUUtilizationPercentage: 70
+
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
@@ -12,6 +29,7 @@ namespace:
   environment: production
 
 backend:
+  terminationGracePeriodSeconds: 60
   image:
     repository: abdulrhmanmokhtar/skillgap-backend
     tag: latest
@@ -19,7 +37,13 @@ backend:
   service:
     type: ClusterIP
     port: 5000
-  resources: {}
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
   env:
     port: "5000"
     nodeEnv: production
@@ -37,6 +61,7 @@ backend:
     rateLimitAuthenticatedMax: "1000"
 
 frontend:
+  terminationGracePeriodSeconds: 60
   image:
     repository: abdulrhmanmokhtar/skillgap-frontend
     tag: latest
@@ -44,11 +69,18 @@ frontend:
   service:
     type: ClusterIP
     port: 8080
-  resources: {}
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
   env:
     apiUrl: /api
 
 model:
+  terminationGracePeriodSeconds: 60
   image:
     repository: abdulrhmanmokhtar/skillgap-model
     tag: latest
@@ -56,7 +88,13 @@ model:
   service:
     type: ClusterIP
     port: 5001
-  resources: {}
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
   env:
     host: 0.0.0.0
 

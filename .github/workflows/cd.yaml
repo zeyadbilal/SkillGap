@@ -1,0 +1,67 @@
+name: Release Images
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_tag:
+        description: "Immutable image tag, for example v1.0.0"
+        required: true
+        type: string
+        default: v1.0.0
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-push:
+    name: Build and push all services
+    runs-on: ubuntu-latest
+    env:
+      IMAGE_TAG: ${{ inputs.version_tag }}
+    
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate image tag
+        shell: bash
+        run: |
+          if [[ ! "$IMAGE_TAG" =~ ^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$ ]]; then
+            echo "Invalid image tag: $IMAGE_TAG"
+            exit 1
+          fi
+
+      - name: Build Backend
+        uses: ./.github/actions/build-push-image
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          image_name: skillgap-backend
+          version_tag: ${{ env.IMAGE_TAG }}
+          context_path: ./backend
+          dockerfile_path: ./backend/Dockerfile
+
+      - name: Build Frontend
+        uses: ./.github/actions/build-push-image
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          image_name: skillgap-frontend
+          version_tag: ${{ env.IMAGE_TAG }}
+          context_path: ./frontend
+          dockerfile_path: ./frontend/Dockerfile
+          build_args: |
+            VITE_API_URL=/api
+
+
+      - name: Build Model
+        uses: ./.github/actions/build-push-image
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          image_name: skillgap-model
+          version_tag: ${{ env.IMAGE_TAG }}
+          context_path: .
+          dockerfile_path: ./model/Dockerfile
