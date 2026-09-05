@@ -13,9 +13,9 @@ namespace:
 
 backend:
   image:
-    repository: skillgap-backend
+    repository: abdulrhmanmokhtar/skillgap-backend
     tag: latest
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
   service:
     type: ClusterIP
     port: 5000
@@ -38,9 +38,9 @@ backend:
 
 frontend:
   image:
-    repository: skillgap-frontend
+    repository: abdulrhmanmokhtar/skillgap-frontend
     tag: latest
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
   service:
     type: ClusterIP
     port: 8080
@@ -50,9 +50,9 @@ frontend:
 
 model:
   image:
-    repository: skillgap-model
+    repository: abdulrhmanmokhtar/skillgap-model
     tag: latest
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
   service:
     type: ClusterIP
     port: 5001

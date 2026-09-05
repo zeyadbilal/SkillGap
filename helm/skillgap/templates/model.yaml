@@ -11,9 +11,9 @@ spec:
   selector:
     app.kubernetes.io/name: {{ include "skillgap.modelName" . }}
   ports:
-    - name: http
+    - name: service-port
       port: {{ .Values.model.service.port }}
-      targetPort: http
+      targetPort: container-port
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -40,7 +40,7 @@ spec:
           image: "{{ .Values.model.image.repository }}:{{ .Values.model.image.tag }}"
           imagePullPolicy: {{ .Values.model.image.pullPolicy }}
           ports:
-            - name: http
+            - name: container-port
               containerPort: {{ .Values.model.service.port }}
           env:
             - name: MODEL_HOST
@@ -49,12 +49,12 @@ spec:
               value: {{ .Values.model.service.port | quote }}
           readinessProbe:
             tcpSocket:
-              port: http
+              port: container-port
             initialDelaySeconds: 10
             periodSeconds: 10
           livenessProbe:
             tcpSocket:
-              port: http
+              port: container-port
             initialDelaySeconds: 30
             periodSeconds: 20
           resources:

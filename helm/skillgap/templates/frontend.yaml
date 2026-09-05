@@ -11,7 +11,7 @@ spec:
   selector:
     app.kubernetes.io/name: {{ include "skillgap.frontendName" . }}
   ports:
-    - name: http
+    - name: service-port
       port: {{ .Values.frontend.service.port }}
       targetPort: container-port
 

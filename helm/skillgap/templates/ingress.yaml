@@ -30,7 +30,7 @@ spec:
               service:
                 name: {{ include "skillgap.frontendName" $ }}
                 port:
-                  name: http
+                  name: service-port
           {{- end }}
     {{- end }}
 {{- end }}
