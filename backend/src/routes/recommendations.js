@@ -20,7 +20,6 @@ router.post(
   verifyToken,
   uploadCv,
   cleanupUploadedCv,
-  requireCvInput,
   analyzeCv
 );
 
