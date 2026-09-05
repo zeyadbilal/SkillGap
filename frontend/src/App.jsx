@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
 
@@ -9,6 +9,41 @@ import Dashboard from "./pages/Dashboard";
 import Jobs from "./pages/Jobs";
 import Analysis from "./pages/Analysis";
 
+function isAuthenticated() {
+  const accessToken = localStorage.getItem("accessToken");
+  const storedUser = localStorage.getItem("user");
+
+  if (!accessToken || !storedUser) {
+    return false;
+  }
+
+  try {
+    const user = JSON.parse(storedUser);
+
+    return Boolean(user && (user.id || user.email));
+  } catch {
+    return false;
+  }
+}
+
+function ProtectedRoute({ children }) {
+  const location = useLocation();
+
+  if (!isAuthenticated()) {
+    return <Navigate to="/login" replace state={{ from: location }} />;
+  }
+
+  return children;
+}
+
+function PublicRoute({ children }) {
+  if (isAuthenticated()) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  return children;
+}
+
 function App() {
   return (
     <BrowserRouter>
@@ -17,15 +52,50 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
 
-        <Route path="/login" element={<Login />} />
+        <Route
+          path="/login"
+          element={
+            <PublicRoute>
+              <Login />
+            </PublicRoute>
+          }
+        />
 
-        <Route path="/register" element={<Register />} />
+        <Route
+          path="/register"
+          element={
+            <PublicRoute>
+              <Register />
+            </PublicRoute>
+          }
+        />
 
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
 
-        <Route path="/jobs" element={<Jobs />} />
+        <Route
+          path="/jobs"
+          element={
+            <ProtectedRoute>
+              <Jobs />
+            </ProtectedRoute>
+          }
+        />
 
-        <Route path="/analysis" element={<Analysis />} />
+        <Route
+          path="/analysis"
+          element={
+            <ProtectedRoute>
+              <Analysis />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );
