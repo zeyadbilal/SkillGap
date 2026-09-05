@@ -3,13 +3,3 @@ __pycache__/
 *.py[cod]
 .venv/
 .DS_Store
-
-
-infra/.terraform/
-infra/*.tfstate
-infra/*.tfstate.*
-.terraform/
-infra/.terraform/
-*.tfstate*
-*.exe
-*.tar
