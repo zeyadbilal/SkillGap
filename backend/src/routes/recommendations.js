@@ -8,6 +8,10 @@ const {
 } = require('../middleware/cvUpload');
 const { analyzeCvSchema } = require('../middleware/validation/recommendationSchemas');
 const { analyzeCv } = require('../controllers/recommendationController');
+const {
+  listHistory,
+  getHistoryDetail,
+} = require('../controllers/historyController');
 
 const router = express.Router();
 
@@ -20,5 +24,9 @@ router.post(
   requireCvInput,
   analyzeCv
 );
+
+router.get('/history', verifyToken, listHistory);
+
+router.get('/history/:id', verifyToken, getHistoryDetail);
 
 module.exports = router;
