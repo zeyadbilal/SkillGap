@@ -1,6 +1,5 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../config/database');
-const { TRACKS } = require('../config/tracks');
 
 const User = sequelize.define(
   'User',
@@ -33,21 +32,6 @@ const User = sequelize.define(
       field: 'graduation_year',
       validate: {
         min: { args: [2000], msg: 'graduation year too early' },
-      },
-    },
-    yearsExperience: {
-      type: DataTypes.INTEGER,
-      defaultValue: 0,
-      field: 'years_experience',
-      validate: {
-        min: 0,
-        max: 70,
-      },
-    },
-    track: {
-      type: DataTypes.STRING(30),
-      validate: {
-        isIn: [TRACKS],
       },
     },
   },

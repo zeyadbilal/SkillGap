@@ -60,6 +60,76 @@ const recommendationsPaths = {
       },
     },
   },
+
+  '/recommendations/history': {
+    get: {
+      summary: 'List previous CV analyses',
+      description:
+        'Returns the authenticated user\'s past CV analyses, newest first, with summary metrics (track, match score, and skill counts). Requires a valid access token.',
+      tags: ['Recommendations'],
+      security: [{ bearerAuth: [] }],
+      parameters: [
+        {
+          name: 'limit',
+          in: 'query',
+          required: false,
+          description: 'Maximum number of entries to return (1-100, default 50).',
+          schema: { type: 'integer', minimum: 1, maximum: 100, default: 50 },
+        },
+      ],
+      responses: {
+        200: {
+          description: 'List of previous analyses',
+          content: {
+            'application/json': {
+              schema: { $ref: '#/components/schemas/HistoryListResponse' },
+            },
+          },
+        },
+        401: {
+          description: 'Missing or invalid token',
+          content: { 'application/json': { schema: err('UNAUTHORIZED') } },
+        },
+      },
+    },
+  },
+
+  '/recommendations/history/{id}': {
+    get: {
+      summary: 'Get a previous analysis by id',
+      description:
+        'Returns the full stored result of one of the authenticated user\'s previous analyses. Analyses owned by other users return 404.',
+      tags: ['Recommendations'],
+      security: [{ bearerAuth: [] }],
+      parameters: [
+        {
+          name: 'id',
+          in: 'path',
+          required: true,
+          description: 'UUID of the stored analysis.',
+          schema: { type: 'string', format: 'uuid' },
+        },
+      ],
+      responses: {
+        200: {
+          description: 'Full stored analysis result',
+          content: {
+            'application/json': {
+              schema: { $ref: '#/components/schemas/HistoryDetailResponse' },
+            },
+          },
+        },
+        401: {
+          description: 'Missing or invalid token',
+          content: { 'application/json': { schema: err('UNAUTHORIZED') } },
+        },
+        404: {
+          description: 'Analysis not found or not owned by the user',
+          content: { 'application/json': { schema: err('NOT_FOUND') } },
+        },
+      },
+    },
+  },
 };
 
 module.exports = { recommendationsPaths };
