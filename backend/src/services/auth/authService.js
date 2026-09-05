@@ -140,6 +140,10 @@ const refresh = async (refreshToken) => {
  * @param {string} refreshToken 
  */
 const logout = (refreshToken) => {
+  if (!refreshToken) {
+    logger.warn('Logout skipped: no refresh token provided');
+    return;
+  }
   logger.info('User logged out', { tokenPrefix: refreshToken.slice(0, 10) });
   revokedRefreshTokens.add(refreshToken);
 };
