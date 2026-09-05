@@ -9,7 +9,7 @@ spec:
   project: skillgap
   source:
     repoURL: https://github.com/zeyadbilal/SkillGap.git
-    targetRevision: abdelrahman-deployment
+    targetRevision: main
     path: helm/skillgap
     helm:
       valueFiles:
