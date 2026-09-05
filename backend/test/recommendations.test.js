@@ -1,6 +1,7 @@
 const request = require('supertest');
 const fs = require('fs');
 const os = require('os');
+const bcrypt = require('bcryptjs');
 const tokenService = require('../src/services/token/tokenService');
 
 const mockAnalyzeModel = jest.fn();
@@ -11,9 +12,13 @@ jest.mock('../src/services/model/modelClient', () => ({
 
 const app = require('../src/app');
 
+const { sequelize, User, Analysis } = require('../src/models');
+
+const USER_ID = '2f6e60d8-9f5c-4f5b-8c1a-000000000001';
+
 const authorization = (fieldOfStudy = 'Full-Stack Development') =>
   `Bearer ${tokenService.signAccessToken({
-    sub: 'recommendation-test-user',
+    sub: USER_ID,
     email: 'recommendation-test@example.com',
     fieldOfStudy,
   })}`;
@@ -30,6 +35,19 @@ const waitForCleanup = async (previousFiles) => {
 };
 
 describe('Recommendations API', () => {
+  beforeAll(async () => {
+    await sequelize.sync({ force: true });
+    await User.create({
+      id: USER_ID,
+      email: 'recommendation-test@example.com',
+      passwordHash: bcrypt.hashSync('password123', 10),
+    });
+  });
+
+  afterAll(async () => {
+    await sequelize.close();
+  });
+
   afterEach(() => {
     mockAnalyzeModel.mockReset();
   });
@@ -69,6 +87,17 @@ describe('Recommendations API', () => {
     expect(response.body.data.pipeline).toEqual(
       expect.objectContaining({ extractor: expect.any(String) })
     );
+
+    const saved = await Analysis.findOne({
+      where: { userId: USER_ID },
+      order: [['createdAt', 'DESC']],
+    });
+    expect(saved).not.toBeNull();
+    expect(saved.track).toBe('Machine Learning / AI');
+    expect(saved.source).toBe('text');
+    expect(saved.result.profileSummary.track).toBe('Machine Learning / AI');
+    expect(saved.matchScore).toBeNull();
+    expect(saved.missingSkills).toBeNull();
   });
 
   test('extracts a TXT upload, derives the track, and removes the temp file', async () => {

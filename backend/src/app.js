@@ -39,8 +39,8 @@ app.use(errorHandler);
 const PORT = config.port;
 if (require.main === module) {
   (async () => {
-    //await sequelize.sync({ alter: true }); commented
-    await sequelize.authenticate(); //added
+    await sequelize.sync({alter:true});
+    await sequelize.authenticate();
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
     });
