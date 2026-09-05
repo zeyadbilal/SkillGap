@@ -8,6 +8,12 @@ on:
         required: true
         type: string
         default: v1.0.0
+  push:
+    branches: 
+      - "main"
+      - "abdelrahman-deployment"
+    paths: 
+      - '**/**'
 
 permissions:
   contents: write
@@ -17,7 +23,7 @@ jobs:
     name: Build and push all services
     runs-on: ubuntu-latest
     env:
-      IMAGE_TAG: ${{ inputs.version_tag }}
+      IMAGE_TAG: ${{ github.event.inputs.version_tag }}
     
     steps:
       - name: Checkout source
