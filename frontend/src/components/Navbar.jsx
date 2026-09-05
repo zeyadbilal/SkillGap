@@ -1,11 +1,57 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { logoutUser } from "../api/api";
 
 function Navbar() {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const darkPages = ["/", "/dashboard", "/analysis"];
 
   const isDarkPage = darkPages.includes(location.pathname);
+
+  const accessToken = localStorage.getItem("accessToken");
+  const storedUser = localStorage.getItem("user");
+
+  let user = null;
+
+  try {
+    user = storedUser ? JSON.parse(storedUser) : null;
+  } catch {
+    user = null;
+  }
+
+  const isLoggedIn = Boolean(accessToken && user);
+
+  const firstName = user?.fullName?.trim().split(/\s+/)[0] || "User";
+
+  const getLinkClass = (path) => {
+    const isActive = location.pathname === path;
+
+    if (isDarkPage) {
+      return isActive
+        ? "text-white font-bold"
+        : "text-white/70 hover:text-white transition";
+    }
+
+    return isActive
+      ? "text-blue-600 font-bold"
+      : "text-slate-600 hover:text-blue-600 transition";
+  };
+
+  const handleLogout = async () => {
+    // fire-and-forget: attempt to revoke the refresh token server-side
+    try {
+      await logoutUser();
+    } catch (error) {
+      // ignore — we want to log out locally regardless of network result
+    }
+
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("user");
+
+    navigate("/login");
+  };
 
   return (
     <nav
@@ -16,65 +62,77 @@ function Navbar() {
       }
     >
       <div className="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
+        {/* ================= LOGO ================= */}
+
         <Link to="/" className="text-2xl font-black tracking-tight">
-          Skill<span className="text-blue-500">Gap</span>
+          Skill
+          <span className="text-blue-500">Gap</span>
         </Link>
 
+        {/* ================= DESKTOP NAV ================= */}
+
         <div className="hidden md:flex items-center gap-8 text-sm">
-          <Link
-            to="/"
-            className={
-              isDarkPage
-                ? "text-white/70 hover:text-white transition"
-                : "text-slate-600 hover:text-blue-600 transition"
-            }
-          >
+          <Link to="/" className={getLinkClass("/")}>
             Home
           </Link>
 
-          <Link
-            to="/jobs"
-            className={
-              isDarkPage
-                ? "text-white/70 hover:text-white transition"
-                : "text-slate-600 hover:text-blue-600 transition"
-            }
-          >
-            Jobs
-          </Link>
+          {isLoggedIn && (
+            <>
+              <Link to="/dashboard" className={getLinkClass("/dashboard")}>
+                Dashboard
+              </Link>
 
-          <Link
-            to="/dashboard"
-            className={
-              isDarkPage
-                ? "text-white/70 hover:text-white transition"
-                : "text-slate-600 hover:text-blue-600 transition"
-            }
-          >
-            Dashboard
-          </Link>
+              <Link to="/analysis" className={getLinkClass("/analysis")}>
+                Analysis
+              </Link>
 
-          <Link
-            to="/login"
-            className={
-              isDarkPage
-                ? "text-white/70 hover:text-white transition"
-                : "text-slate-600 hover:text-blue-600 transition"
-            }
-          >
-            Login
-          </Link>
+              <Link to="/market" className={getLinkClass("/market")}>
+                Market
+              </Link>
+            </>
+          )}
 
-          <Link
-            to="/register"
-            className={
-              isDarkPage
-                ? "bg-white text-black px-5 py-3 rounded-full font-semibold hover:bg-slate-200 transition"
-                : "bg-blue-600 text-white px-5 py-3 rounded-full font-semibold hover:bg-blue-700 transition"
-            }
-          >
-            Get Started
-          </Link>
+          {/* ================= LOGGED OUT ================= */}
+
+          {!isLoggedIn && (
+            <>
+              <Link to="/login" className={getLinkClass("/login")}>
+                Login
+              </Link>
+
+              <Link
+                to="/register"
+                className={
+                  isDarkPage
+                    ? "bg-white text-black px-5 py-3 rounded-full font-semibold hover:bg-slate-200 transition"
+                    : "bg-blue-600 text-white px-5 py-3 rounded-full font-semibold hover:bg-blue-700 transition"
+                }
+              >
+                Get Started
+              </Link>
+            </>
+          )}
+
+          {/* ================= LOGGED IN ================= */}
+
+          {isLoggedIn && (
+            <div className="flex items-center gap-4">
+              <span className={isDarkPage ? "text-white/60" : "text-slate-400"}>
+                Hi, {firstName}
+              </span>
+
+              <button
+                onClick={handleLogout}
+                className={
+                  isDarkPage
+                    ? "bg-white text-black px-5 py-3 rounded-full font-semibold hover:bg-slate-200 transition"
+                    : "bg-black text-white px-5 py-3 rounded-full font-semibold hover:bg-slate-800 transition"
+                }
+              >
+                Logout
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </nav>

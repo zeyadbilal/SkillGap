@@ -1,26 +1,17 @@
 const cvRecommendationService = require('../services/recommendation/cvRecommendationService');
 const { extractText } = require('../services/cv/cvParserService');
-const { trackFromFieldOfStudy } = require('../config/tracks');
-
-function requestError(message, errorCode, statusCode) {
-  const error = new Error(message);
-  error.errorCode = errorCode;
-  error.statusCode = statusCode;
-  return error;
-}
+const { TRACK_NAMES } = require('../config/tracks');
 
 async function analyzeCv(req, res, next) {
   try {
     const input = { ...req.body };
-    const track = trackFromFieldOfStudy(req.user.fieldOfStudy);
-    if (track) input.track = track;
+    const track = req.user.fieldOfStudy;
+    if (track && TRACK_NAMES.includes(track)) {
+      input.track = track;
+    }
     if (req.file) {
       const { text } = await extractText(req.file.path, req.file.originalname);
-      const cvText = String(text || '').trim();
-      if (!cvText) {
-        throw requestError('The uploaded CV contains no extractable text', 'EMPTY_CV_TEXT', 422);
-      }
-      input.cvText = cvText;
+      input.cvText = text;
     }
 
     const result = await cvRecommendationService.analyzeCv(input);

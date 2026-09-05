@@ -20,15 +20,6 @@ const TRACK_LABELS = {
   ml_ai: 'Machine Learning / AI',
 };
 
-const FIELD_OF_STUDY_TRACKS = {
-  'Software Development': 'Full-Stack Development',
-  'Data Science & Analytics': 'Machine Learning / AI',
-  'DevOps & Cloud Infrastructure': 'DevOps & Cloud Engineering',
-  'UI/UX Design': 'Frontend Development',
-  Cybersecurity: 'Network Security',
-  'Mobile Development': 'Mobile Development',
-};
+const TRACK_NAMES = Object.values(TRACK_LABELS);
 
-const trackFromFieldOfStudy = (fieldOfStudy) => FIELD_OF_STUDY_TRACKS[fieldOfStudy];
-
-module.exports = { TRACKS, TRACK_LABELS, FIELD_OF_STUDY_TRACKS, trackFromFieldOfStudy };
+module.exports = { TRACKS, TRACK_LABELS, TRACK_NAMES };
