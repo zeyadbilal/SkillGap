@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ include "skillgap.backendName" . }}
+  namespace: {{ include "skillgap.namespaceName" . }}
   labels:
     {{- include "skillgap.labels" . | nindent 4 }}
     app.kubernetes.io/component: backend
@@ -20,6 +21,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "skillgap.backendName" . }}
+  namespace: {{ include "skillgap.namespaceName" . }}
   labels:
     {{- include "skillgap.labels" . | nindent 4 }}
     app.kubernetes.io/component: backend
@@ -53,6 +55,8 @@ spec:
               value: {{ .Values.backend.env.pgPoolMax | quote }}
             - name: PG_POOL_MIN
               value: {{ .Values.backend.env.pgPoolMin | quote }}
+            - name: MODEL_SERVICE_URL
+              value: {{ printf "http://%s:%v" (include "skillgap.modelName" .) .Values.model.service.port | quote }}
             - name: JWT_SECRET
               valueFrom:
                 secretKeyRef:

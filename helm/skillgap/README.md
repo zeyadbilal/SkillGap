@@ -1,30 +1,36 @@
 # SkillGap Helm chart
 
-This chart deploys the frontend and backend. PostgreSQL and Redis are external
-Railway services; the default images are local names, so override them with the
-images pushed to your registry.
+This chart deploys the frontend, backend, and model service to Kubernetes. It
+uses ClusterIP services internally and an AWS Application Load Balancer when
+the AWS Load Balancer Controller is installed in the EKS cluster.
 
 ## Install
 
 ```bash
 helm upgrade --install skillgap ./helm/skillgap \
-  --set backend.image.repository=ghcr.io/example/skillgap-backend \
-  --set backend.image.tag=latest \
-  --set frontend.image.repository=ghcr.io/example/skillgap-frontend \
-  --set frontend.image.tag=latest \
+  --namespace skillgap-production \
+  --create-namespace \
+  --set backend.image.repository=<aws-account-id>.dkr.ecr.<aws-region>.amazonaws.com/skillgap-backend \
+  --set backend.image.tag=<image-tag> \
+  --set frontend.image.repository=<aws-account-id>.dkr.ecr.<aws-region>.amazonaws.com/skillgap-frontend \
+  --set frontend.image.tag=<image-tag> \
+  --set model.image.repository=<aws-account-id>.dkr.ecr.<aws-region>.amazonaws.com/skillgap-model \
+  --set model.image.tag=<image-tag> \
   --set external.postgresUrl='postgres://user:password@postgres.railway.internal:5432/railway' \
   --set external.redisUrl='rediss://default:password@redis.railway.internal:6379' \
   --set secrets.jwtSecret='replace-with-a-long-random-secret' \
+  --set namespace.environment=production \
+  --set ingress.hosts[0].host=skillgap.example.com \
   --set ingress.enabled=true
 ```
 
-Enable an ingress with `--set ingress.enabled=true` and set the host with
-`--set ingress.hosts[0].host=skillgap.example.com`.
+Before installing, install the AWS Load Balancer Controller and configure its
+IAM permissions through IRSA. The controller creates the ALB from the chart's
+`alb` ingress class and annotations.
 
-The model image is not deployed by this chart because the current model is a
-stdin/stdout CLI, not an HTTP service. The backend currently expects to run
-the extractor as a local Python process and falls back to its JavaScript
-extractor when Python is unavailable.
+The model is deployed as an internal HTTP service. The backend receives its
+URL from `MODEL_SERVICE_URL` and calls the model through the model ClusterIP
+service.
 
 Railway URLs should be copied from the Railway service variables or connection
 details. Use `rediss://` when Railway requires TLS for Redis.

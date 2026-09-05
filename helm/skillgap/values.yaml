@@ -1,10 +1,15 @@
 replicaCount:
   backend: 1
   frontend: 1
+  model: 1
 
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
+
+namespace:
+  appName: skillgap
+  environment: production
 
 backend:
   image:
@@ -31,21 +36,34 @@ frontend:
     port: 8080
   resources: {}
 
+model:
+  image:
+    repository: skillgap-model
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 5001
+  resources: {}
+
 external:
   # Railway PostgreSQL connection string, for example postgres://user:password@host:port/db
-  postgresUrl: "postgresql://postgres:LZnTIfohYPjuPwlJJniEXlBlvoyElLXv@hayabusa.proxy.rlwy.net:35151/railway"
+  postgresUrl: ""
   # Railway Redis connection string, for example rediss://default:password@host:port
   redisUrl: "http://localhost"
 
 secrets:
-  jwtSecret: "gsbadgsgbaGSFGASFGSDG"
+  jwtSecret: ""
 
 ingress:
   enabled: false
-  className: nginx
-  annotations: {}
+  className: alb
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/healthcheck-path: /
   hosts:
-    - host: skillgap.local
+    - host: skillgap.abdelrahmanmokhater.me
       paths:
         - path: /
           pathType: Prefix

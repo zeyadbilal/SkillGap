@@ -25,3 +25,11 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- define "skillgap.frontendName" -}}
 {{ include "skillgap.fullname" . }}-frontend
 {{- end }}
+
+{{- define "skillgap.modelName" -}}
+{{ include "skillgap.fullname" . }}-model
+{{- end }}
+
+{{- define "skillgap.namespaceName" -}}
+{{- printf "%s-%s" .Values.namespace.appName .Values.namespace.environment | trunc 63 | trimSuffix "-" }}
+{{- end }}
