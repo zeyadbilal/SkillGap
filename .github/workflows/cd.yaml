@@ -8,6 +8,12 @@ on:
         required: true
         type: string
         default: v1.0.0
+  push:
+    branches: 
+      - "main"
+      - "abdelrahman-deployment"
+    paths: 
+      - '**/**'
 
 permissions:
   contents: write
