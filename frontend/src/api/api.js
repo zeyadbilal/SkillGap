@@ -40,6 +40,10 @@ function getServerErrorMessage(data, status) {
   }
 
   if (status === 422) {
+    if (data?.errorCode === "NO_SKILLS_DETECTED") {
+      return "We couldn't detect any skills in this document. It doesn't look like a resume — please upload your CV.";
+    }
+
     if (backendMessage.toLowerCase().includes("cv")) {
       return "We couldn't read this CV properly. Please try another PDF, DOCX or TXT file.";
     }
@@ -123,19 +127,41 @@ function getServerErrorMessage(data, status) {
 }
 
 /* ======================================================
-   MAIN REQUEST FUNCTION
-====================================================== */
+   SESSION HELPERS
+===================================================== */
 
-async function request(endpoint, options = {}) {
+function clearAuthStorage() {
+  localStorage.removeItem("accessToken");
+  localStorage.removeItem("refreshToken");
+  localStorage.removeItem("user");
+}
+
+function handleSessionExpired() {
+  clearAuthStorage();
+
+  const { pathname } = window.location;
+
+  if (pathname !== "/login" && pathname !== "/register") {
+    window.location.assign("/login");
+  }
+}
+
+/* ======================================================
+   MAIN REQUEST FUNCTION
+===================================================== */
+
+async function request(endpoint, options = {}, retried = false) {
+  const { skipAuthRefresh, ...fetchOptions } = options;
+
   const token = localStorage.getItem("accessToken");
 
-  const isFormData = options.body instanceof FormData;
+  const isFormData = fetchOptions.body instanceof FormData;
 
   let response;
 
   try {
     response = await fetch(`${API_URL}${endpoint}`, {
-      ...options,
+      ...fetchOptions,
 
       headers: {
         ...(isFormData
@@ -150,7 +176,7 @@ async function request(endpoint, options = {}) {
             }
           : {}),
 
-        ...(options.headers || {}),
+        ...(fetchOptions.headers || {}),
       },
     });
   } catch (error) {
@@ -202,6 +228,21 @@ async function request(endpoint, options = {}) {
   ====================================================== */
 
   if (!response.ok) {
+    if (response.status === 401 && !retried && !skipAuthRefresh && token) {
+      try {
+        await refreshAccessToken();
+
+        return request(endpoint, fetchOptions, true);
+      } catch (refreshError) {
+        handleSessionExpired();
+        throw refreshError;
+      }
+    }
+
+    if (response.status === 401 && !skipAuthRefresh && token) {
+      handleSessionExpired();
+    }
+
     const friendlyMessage = getServerErrorMessage(data, response.status);
 
     throw createFriendlyError(friendlyMessage, response.status);
@@ -218,7 +259,7 @@ async function request(endpoint, options = {}) {
 export const registerUser = (userData) => {
   return request("/auth/register", {
     method: "POST",
-
+    skipAuthRefresh: true,
     body: JSON.stringify(userData),
   });
 };
@@ -227,7 +268,7 @@ export const registerUser = (userData) => {
 export const loginUser = (userData) => {
   return request("/auth/login", {
     method: "POST",
-
+    skipAuthRefresh: true,
     body: JSON.stringify(userData),
   });
 };
@@ -253,7 +294,7 @@ export const refreshAccessToken = async () => {
 
   const data = await request("/auth/refresh", {
     method: "POST",
-
+    skipAuthRefresh: true,
     body: JSON.stringify({
       refreshToken,
     }),
@@ -300,7 +341,7 @@ export const logoutUser = () => {
 
   return request("/auth/logout", {
     method: "POST",
-
+    skipAuthRefresh: true,
     body: JSON.stringify({
       refreshToken,
     }),
@@ -332,4 +373,18 @@ export const analyzeCvText = (cvText) => {
       cvText,
     }),
   });
+};
+
+/* ======================================================
+   ANALYSIS HISTORY
+====================================================== */
+
+// List previous analyses for the current user
+export const getAnalysisHistory = () => {
+  return request("/recommendations/history");
+};
+
+// Fetch the full result of a single previous analysis
+export const getAnalysisById = (id) => {
+  return request(`/recommendations/history/${id}`);
 };

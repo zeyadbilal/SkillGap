@@ -39,7 +39,7 @@ function Home() {
               </Link>
 
               <Link
-                to="/jobs"
+                to="/market"
                 className="border border-white/20 hover:bg-white/10 px-7 py-4 rounded-full font-semibold transition"
               >
                 Explore Market
@@ -419,8 +419,8 @@ function Home() {
                 Home
               </Link>
 
-              <Link to="/jobs" className="hover:text-white">
-                Jobs
+              <Link to="/market" className="hover:text-white">
+                Market
               </Link>
 
               <Link to="/analysis" className="hover:text-white">

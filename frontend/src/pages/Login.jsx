@@ -1,12 +1,14 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { loginUser } from "../api/api";
 
 function Login() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -34,7 +36,9 @@ function Login() {
       // Store user information
       localStorage.setItem("user", JSON.stringify(response.data.user));
 
-      navigate("/dashboard");
+      const from = location.state?.from?.pathname || "/dashboard";
+
+      navigate(from, { replace: true });
     } catch (error) {
       setError(error.message);
     } finally {
@@ -108,14 +112,24 @@ function Login() {
                 </button>
               </div>
 
-              <input
-                type="password"
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                placeholder="••••••••"
-                required
-                className="w-full px-4 py-3 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-500"
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                  placeholder="••••••••"
+                  required
+                  className="w-full px-4 py-3 pr-14 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-500"
+                />
+
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((visible) => !visible)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-sm font-semibold text-blue-600 hover:text-blue-700"
+                >
+                  {showPassword ? "Hide" : "Show"}
+                </button>
+              </div>
             </div>
 
             {/* Error */}

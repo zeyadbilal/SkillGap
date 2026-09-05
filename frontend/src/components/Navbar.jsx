@@ -1,4 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { logoutUser } from "../api/api";
 
 function Navbar() {
   const location = useLocation();
@@ -37,7 +38,14 @@ function Navbar() {
       : "text-slate-600 hover:text-blue-600 transition";
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    // fire-and-forget: attempt to revoke the refresh token server-side
+    try {
+      await logoutUser();
+    } catch (error) {
+      // ignore — we want to log out locally regardless of network result
+    }
+
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("user");
@@ -78,8 +86,12 @@ function Navbar() {
                 Analysis
               </Link>
 
-              <Link to="/jobs" className={getLinkClass("/jobs")}>
-                Jobs
+              <Link to="/history" className={getLinkClass("/history")}>
+                History
+              </Link>
+
+              <Link to="/market" className={getLinkClass("/market")}>
+                Market
               </Link>
             </>
           )}
