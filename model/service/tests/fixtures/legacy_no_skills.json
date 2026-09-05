@@ -1,0 +1,113 @@
+{
+  "input": {
+    "cvText": "Experienced professional focused on communication, planning, mentoring, documentation, and stakeholder coordination across several organizations."
+  },
+  "output": {
+    "profileSummary": {
+      "track": "Machine Learning / AI",
+      "matchScore": 0,
+      "detectedSkills": 0,
+      "missingSkills": 5,
+      "marketSkillsReviewed": 5,
+      "bestSkills": ["python", "machine learning", "llm", "sql", "pytorch"]
+    },
+    "currentSkills": [],
+    "skillGaps": [
+      {
+        "skill": "python",
+        "track": "Machine Learning / AI",
+        "demandScore": 1,
+        "count": 35,
+        "marketRank": 1,
+        "priority": 10,
+        "reason": "Frequently requested in Machine Learning / AI roles",
+        "learningResources": [
+          {"title": "python fundamentals", "type": "course"},
+          {"title": "Build a python project", "type": "project"},
+          {"title": "Machine Learning / AI community resources", "type": "community"}
+        ]
+      },
+      {
+        "skill": "machine learning",
+        "track": "Machine Learning / AI",
+        "demandScore": 0.86,
+        "count": 30,
+        "marketRank": 2,
+        "priority": 9,
+        "reason": "Frequently requested in Machine Learning / AI roles",
+        "learningResources": [
+          {"title": "machine learning fundamentals", "type": "course"},
+          {"title": "Build a machine learning project", "type": "project"},
+          {"title": "Machine Learning / AI community resources", "type": "community"}
+        ]
+      },
+      {
+        "skill": "llm",
+        "track": "Machine Learning / AI",
+        "demandScore": 0.69,
+        "count": 24,
+        "marketRank": 3,
+        "priority": 8,
+        "reason": "Frequently requested in Machine Learning / AI roles",
+        "learningResources": [
+          {"title": "llm fundamentals", "type": "course"},
+          {"title": "Build a llm project", "type": "project"},
+          {"title": "Machine Learning / AI community resources", "type": "community"}
+        ]
+      },
+      {
+        "skill": "sql",
+        "track": "Machine Learning / AI",
+        "demandScore": 0.4,
+        "count": 14,
+        "marketRank": 4,
+        "priority": 6,
+        "reason": "Frequently requested in Machine Learning / AI roles",
+        "learningResources": [
+          {"title": "sql fundamentals", "type": "course"},
+          {"title": "Build a sql project", "type": "project"},
+          {"title": "Machine Learning / AI community resources", "type": "community"}
+        ]
+      },
+      {
+        "skill": "pytorch",
+        "track": "Machine Learning / AI",
+        "demandScore": 0.31,
+        "count": 11,
+        "marketRank": 5,
+        "priority": 5,
+        "reason": "Frequently requested in Machine Learning / AI roles",
+        "learningResources": [
+          {"title": "pytorch fundamentals", "type": "course"},
+          {"title": "Build a pytorch project", "type": "project"},
+          {"title": "Machine Learning / AI community resources", "type": "community"}
+        ]
+      }
+    ],
+    "learningRoadmap": [
+      {
+        "month": 1,
+        "title": "Focus: python",
+        "skills": ["python"],
+        "projects": ["Build a small project using python"],
+        "estimatedHours": 18,
+        "hoursPerWeek": 5
+      }
+    ],
+    "usefulStuff": {
+      "topMarketSkills": [
+        {"skill": "python", "count": 35, "rank": 1},
+        {"skill": "machine learning", "count": 30, "rank": 2},
+        {"skill": "llm", "count": 24, "rank": 3},
+        {"skill": "sql", "count": 14, "rank": 4},
+        {"skill": "pytorch", "count": 11, "rank": 5}
+      ],
+      "nextActions": [
+        {"action": "Study python", "why": "Frequently requested in Machine Learning / AI roles"},
+        {"action": "Study machine learning", "why": "Frequently requested in Machine Learning / AI roles"},
+        {"action": "Study llm", "why": "Frequently requested in Machine Learning / AI roles"}
+      ]
+    },
+    "pipeline": {"extractor": "marketData-regex-empty-python"}
+  }
+}

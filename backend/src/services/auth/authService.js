@@ -16,7 +16,7 @@ const toPublicUser = (user) => ({
 
 /** Generate access and refresh tokens for a user. */
 const generateTokens = (user) => {
-  const payload = { sub: user.id, email: user.email };
+  const payload = { sub: user.id, email: user.email, fieldOfStudy: user.fieldOfStudy };
   return {
     accessToken: tokenService.signAccessToken(payload),
     refreshToken: tokenService.signRefreshToken(payload),
