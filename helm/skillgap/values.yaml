@@ -32,7 +32,7 @@ backend:
   terminationGracePeriodSeconds: 60
   image:
     repository: abdulrhmanmokhtar/skillgap-backend
-    tag: latest
+    tag: sha256:0afedec294281a556d1aa437cd45de114a2b831e22af1de9ed7937fecd4dba9f
     pullPolicy: Always
   service:
     type: ClusterIP
@@ -64,7 +64,7 @@ frontend:
   terminationGracePeriodSeconds: 60
   image:
     repository: abdulrhmanmokhtar/skillgap-frontend
-    tag: latest
+    tag: sha256:ce79a8b39265041fae3eb626ca56bb946a264761fa29672a593d1cb4d8db6a95
     pullPolicy: Always
   service:
     type: ClusterIP
@@ -83,7 +83,7 @@ model:
   terminationGracePeriodSeconds: 60
   image:
     repository: abdulrhmanmokhtar/skillgap-model
-    tag: latest
+    tag: sha256:15cbdb08c21e8e8b318582b427ba28db5f049f5194c69e2e211fb33ea7a10c3a
     pullPolicy: Always
   service:
     type: ClusterIP
