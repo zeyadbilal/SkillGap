@@ -177,7 +177,7 @@ function Register() {
 
             <div>
               <label className="block text-sm font-semibold mb-2">
-                Field of Study
+                Career Track
               </label>
 
               <select
@@ -186,29 +186,39 @@ function Register() {
                 required
                 className="w-full px-4 py-3 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 bg-white"
               >
-                <option value="">Select your field</option>
+                <option value="">Select your track</option>
 
-                <option value="Software Development">
-                  Software Development
+                <option value="Backend Development">
+                  Backend Development
                 </option>
 
-                <option value="Data Science & Analytics">
-                  Data Science & Analytics
+                <option value="Frontend Development">
+                  Frontend Development
                 </option>
 
-                <option value="DevOps & Cloud Infrastructure">
-                  DevOps & Cloud Infrastructure
+                <option value="Full-Stack Development">
+                  Full-Stack Development
                 </option>
 
-                <option value="Product Management">Product Management</option>
+                <option value="Mobile Development">
+                  Mobile Development
+                </option>
 
-                <option value="UI/UX Design">UI/UX Design</option>
+                <option value="DevOps & Cloud Engineering">
+                  DevOps & Cloud Engineering
+                </option>
 
-                <option value="Business Analysis">Business Analysis</option>
+                <option value="Network Administration">
+                  Network Administration
+                </option>
 
-                <option value="Cybersecurity">Cybersecurity</option>
+                <option value="Network Security">
+                  Network Security
+                </option>
 
-                <option value="Mobile Development">Mobile Development</option>
+                <option value="Machine Learning / AI">
+                  Machine Learning / AI
+                </option>
               </select>
             </div>
 

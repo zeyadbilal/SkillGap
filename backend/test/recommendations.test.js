@@ -11,7 +11,7 @@ jest.mock('../src/services/model/modelClient', () => ({
 
 const app = require('../src/app');
 
-const authorization = (fieldOfStudy = 'Software Development') =>
+const authorization = (fieldOfStudy = 'Full-Stack Development') =>
   `Bearer ${tokenService.signAccessToken({
     sub: 'recommendation-test-user',
     email: 'recommendation-test@example.com',
@@ -53,7 +53,7 @@ describe('Recommendations API', () => {
 
     const response = await request(app)
       .post('/recommendations/analyze')
-      .set('Authorization', authorization('Data Science & Analytics'))
+      .set('Authorization', authorization('Machine Learning / AI'))
       .send(requestBody)
       .expect(200);
 
@@ -186,7 +186,7 @@ describe('Recommendations API', () => {
     expect(mockAnalyzeModel).not.toHaveBeenCalled();
   });
 
-  test('lets the model infer a track when fieldOfStudy has no model-track mapping', async () => {
+  test('leaves the track to the model when fieldOfStudy is not an available track', async () => {
     mockAnalyzeModel.mockResolvedValueOnce({
       profileSummary: { track: 'Machine Learning / AI' },
       currentSkills: [],
