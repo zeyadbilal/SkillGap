@@ -27,7 +27,14 @@ COPY --chown=node:node docs ./docs
 
 ARG DEFAULT_PORT=5000
 ENV PORT=$DEFAULT_PORT
+ENV NODE_ENV=production
+
+# env for database and redis and jwt secret
+ENV DATABASE_URL=""
+ENV REDIS_URL=""
+ENV JWT_SECRET=""
+
 EXPOSE $PORT
 
 # run node with pid 1 to solve SIGTERM
-CMD ["node", "src/app.js"] 
+CMD ["node", "src/app.js"]

@@ -1,0 +1,29 @@
+{{- if .Values.autoscaling.model.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "skillgap.modelName" . }}
+  namespace: {{ include "skillgap.namespaceName" . }}
+  labels:
+    {{- include "skillgap.labels" . | nindent 4 }}
+    app.kubernetes.io/component: model
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "skillgap.modelName" . }}
+  minReplicas: {{ .Values.autoscaling.model.minReplicas }}
+  maxReplicas: {{ .Values.autoscaling.model.maxReplicas }}
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 0
+    scaleDown:
+      stabilizationWindowSeconds: 300
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.autoscaling.model.targetCPUUtilizationPercentage }}
+{{- end }}

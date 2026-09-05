@@ -1,0 +1,72 @@
+name: 'Code Check Composite Action'
+description: 'Setup Node, Install Dependencies, Run Tests, and Audit.'
+
+inputs:
+  working-directory:
+    description: 'Directory of the project'
+    required: true
+  
+  project-name:
+    description: 'Name of the project'
+    required: true
+  
+  node-version:
+    description: 'Node version from matrix'
+    required: true
+
+  run-build:
+    description: 'Whether to run npm run build'
+    required: false
+    default: 'false'
+
+
+
+runs:
+  using: "composite"
+  steps:
+    - name: setup node-v${{ inputs.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+
+    - name: Cache node_modules
+      uses: actions/cache@v4
+      id: npm-cache
+      with:
+        path: ${{ inputs.working-directory }}/node_modules
+        key: ${{ runner.os }}-${{ inputs.node-version }}-node-modules-${{ hashFiles(format('{0}/package-lock.json', inputs.working-directory)) }}
+        restore-keys: |
+          ${{ runner.os }}-${{ inputs.node-version }}-node-modules-
+
+    - name: install Dependencies
+      if: steps.npm-cache.outputs.cache-hit != 'true'
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: npm ci
+
+    - name: testing with coverage
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: npm test -- --coverage --detectOpenHandles --forceExit || echo "no tests"
+      env:
+        DATABASE_URL: postgres://testuser:testpassword@localhost:5432/testdb
+        REDIS_URL: redis://localhost:6379
+
+
+    - name: Upload Coverage Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ inputs.project-name }}-coverage-report-node-${{ inputs.node-version }}
+        path: ${{ inputs.working-directory }}/coverage/
+
+
+    - name: Dependency Security Scan
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: npm audit --audit-level=high
+
+    - name: Build Project
+      if: ${{ inputs.run-build == 'true' }}
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: npm run build

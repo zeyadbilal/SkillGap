@@ -6,6 +6,8 @@ COPY package.json package-lock.json ./
 RUN npm ci
 
 COPY . .
+ARG VITE_API_URL=/api
+ENV VITE_API_URL=$VITE_API_URL
 RUN npm run build
 
 
@@ -21,6 +23,9 @@ USER nginx
 
 ARG DEFAULT_PORT=8080
 ENV PORT=$DEFAULT_PORT
+
+ENV BACKEND_URL=http://localhost:5000
+
 EXPOSE $PORT
 
 CMD ["nginx", "-g", "daemon off;"]

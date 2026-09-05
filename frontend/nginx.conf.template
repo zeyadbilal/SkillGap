@@ -8,7 +8,6 @@ server {
         try_files $uri $uri/ /index.html;
     }
 
-    # 2. توجيه طلبات الـ API إلى الـ Backend
     location /api/ {
         proxy_pass ${BACKEND_URL}/; 
 
