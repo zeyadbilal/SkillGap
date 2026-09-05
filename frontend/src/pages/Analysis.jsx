@@ -109,6 +109,12 @@ function Analysis() {
   /* ================= FRIENDLY ERRORS ================= */
 
   const getFriendlyErrorMessage = (err) => {
+    // api.js already converts backend errors to friendly messages.
+    // Don't re-process those — fall through to them.
+    if (err?.isFriendly && err?.message) {
+      return err.message;
+    }
+
     const message = err?.message?.toLowerCase() || "";
 
     if (
@@ -127,34 +133,6 @@ function Analysis() {
       message.includes("authentication")
     ) {
       return "Your session has expired. Please log in again.";
-    }
-
-    if (message.includes("file too large") || message.includes("10mb")) {
-      return "Your CV is too large. Please upload a file smaller than 10 MB.";
-    }
-
-    if (
-      message.includes("invalid file") ||
-      message.includes("unsupported file") ||
-      message.includes("file type")
-    ) {
-      return "This file type is not supported. Please upload a PDF, DOCX or TXT file.";
-    }
-
-    if (
-      message.includes("could not be parsed") ||
-      message.includes("parse") ||
-      message.includes("no readable text")
-    ) {
-      return "We couldn't read the text in this CV. Please try another PDF, DOCX or TXT file.";
-    }
-
-    if (
-      message.includes("model") ||
-      message.includes("analysis service") ||
-      message.includes("503")
-    ) {
-      return "The CV analysis service is temporarily unavailable. Please try again shortly.";
     }
 
     return "We couldn't analyze your CV right now. Please try again.";
