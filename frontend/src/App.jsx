@@ -1,4 +1,10 @@
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+} from "react-router-dom";
 
 import Navbar from "./components/Navbar";
 
@@ -8,6 +14,8 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import Market from "./pages/Market";
 import Analysis from "./pages/Analysis";
+import History from "./pages/History";
+import HistoryDetail from "./pages/HistoryDetail";
 
 function isAuthenticated() {
   const accessToken = localStorage.getItem("accessToken");
@@ -93,6 +101,24 @@ function App() {
           element={
             <ProtectedRoute>
               <Analysis />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/history"
+          element={
+            <ProtectedRoute>
+              <History />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/history/:id"
+          element={
+            <ProtectedRoute>
+              <HistoryDetail />
             </ProtectedRoute>
           }
         />
