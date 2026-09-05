@@ -188,9 +188,7 @@ function Register() {
               >
                 <option value="">Select your track</option>
 
-                <option value="Backend Development">
-                  Backend Development
-                </option>
+                <option value="Backend Development">Backend Development</option>
 
                 <option value="Frontend Development">
                   Frontend Development
@@ -200,9 +198,7 @@ function Register() {
                   Full-Stack Development
                 </option>
 
-                <option value="Mobile Development">
-                  Mobile Development
-                </option>
+                <option value="Mobile Development">Mobile Development</option>
 
                 <option value="DevOps & Cloud Engineering">
                   DevOps & Cloud Engineering
@@ -212,9 +208,7 @@ function Register() {
                   Network Administration
                 </option>
 
-                <option value="Network Security">
-                  Network Security
-                </option>
+                <option value="Network Security">Network Security</option>
 
                 <option value="Machine Learning / AI">
                   Machine Learning / AI

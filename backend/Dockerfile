@@ -37,4 +37,4 @@ ENV JWT_SECRET=""
 EXPOSE $PORT
 
 # run node with pid 1 to solve SIGTERM
-CMD ["node", "src/app.js"] 
+CMD ["node", "src/app.js"]

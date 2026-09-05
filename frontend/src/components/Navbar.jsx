@@ -86,11 +86,16 @@ function Navbar() {
                 Analysis
               </Link>
 
+              <Link to="/history" className={getLinkClass("/history")}>
+                History
+              </Link>
+
               <Link to="/market" className={getLinkClass("/market")}>
                 Market
               </Link>
             </>
           )}
+
 
           {/* ================= LOGGED OUT ================= */}
 

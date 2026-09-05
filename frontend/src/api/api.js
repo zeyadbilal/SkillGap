@@ -228,12 +228,7 @@ async function request(endpoint, options = {}, retried = false) {
   ====================================================== */
 
   if (!response.ok) {
-    if (
-      response.status === 401 &&
-      !retried &&
-      !skipAuthRefresh &&
-      token
-    ) {
+    if (response.status === 401 && !retried && !skipAuthRefresh && token) {
       try {
         await refreshAccessToken();
 
@@ -378,4 +373,18 @@ export const analyzeCvText = (cvText) => {
       cvText,
     }),
   });
+};
+
+/* ======================================================
+   ANALYSIS HISTORY
+====================================================== */
+
+// List previous analyses for the current user
+export const getAnalysisHistory = () => {
+  return request("/recommendations/history");
+};
+
+// Fetch the full result of a single previous analysis
+export const getAnalysisById = (id) => {
+  return request(`/recommendations/history/${id}`);
 };
