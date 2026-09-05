@@ -46,7 +46,7 @@ spec:
               containerPort: {{ .Values.backend.service.port }}
           env:
             - name: PORT
-              value: {{ .Values.backend.service.port | quote }}
+              value: {{ .Values.backend.env.port | quote }}
             - name: NODE_ENV
               value: {{ .Values.backend.env.nodeEnv | quote }}
             - name: LOG_LEVEL
@@ -55,8 +55,38 @@ spec:
               value: {{ .Values.backend.env.pgPoolMax | quote }}
             - name: PG_POOL_MIN
               value: {{ .Values.backend.env.pgPoolMin | quote }}
+            - name: PGHOST
+              value: {{ .Values.backend.env.pgHost | quote }}
+            - name: PGPORT
+              value: {{ .Values.backend.env.pgPort | quote }}
+            - name: PGDATABASE
+              value: {{ .Values.backend.env.pgDatabase | quote }}
+            - name: PGUSER
+              value: {{ .Values.backend.env.pgUser | quote }}
+            - name: MODEL_SERVICE_TIMEOUT_MS
+              value: {{ .Values.backend.env.modelServiceTimeoutMs | quote }}
+            - name: RATE_LIMIT_REGISTER_MAX
+              value: {{ .Values.backend.env.rateLimitRegisterMax | quote }}
+            - name: RATE_LIMIT_LOGIN_MAX
+              value: {{ .Values.backend.env.rateLimitLoginMax | quote }}
+            - name: RATE_LIMIT_PUBLIC_MAX
+              value: {{ .Values.backend.env.rateLimitPublicMax | quote }}
+            - name: RATE_LIMIT_AUTHENTICATED_MAX
+              value: {{ .Values.backend.env.rateLimitAuthenticatedMax | quote }}
             - name: MODEL_SERVICE_URL
               value: {{ printf "http://%s:%v" (include "skillgap.modelName" .) .Values.model.service.port | quote }}
+            - name: AXIOM_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "skillgap.fullname" . }}-secrets
+                  key: axiom-token
+                  optional: true
+            - name: AXIOM_DATASET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "skillgap.fullname" . }}-secrets
+                  key: axiom-dataset
+                  optional: true
             - name: JWT_SECRET
               valueFrom:
                 secretKeyRef:

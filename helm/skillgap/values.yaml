@@ -21,10 +21,20 @@ backend:
     port: 5000
   resources: {}
   env:
+    port: "5000"
     nodeEnv: production
     logLevel: info
     pgPoolMax: "20"
     pgPoolMin: "0"
+    pgHost: localhost
+    pgPort: "5432"
+    pgDatabase: skill_gap_advisor
+    pgUser: skill_gap_app
+    modelServiceTimeoutMs: "30000"
+    rateLimitRegisterMax: "5"
+    rateLimitLoginMax: "10"
+    rateLimitPublicMax: "100"
+    rateLimitAuthenticatedMax: "1000"
 
 frontend:
   image:
@@ -35,6 +45,8 @@ frontend:
     type: ClusterIP
     port: 8080
   resources: {}
+  env:
+    apiUrl: /api
 
 model:
   image:
@@ -45,25 +57,29 @@ model:
     type: ClusterIP
     port: 5001
   resources: {}
+  env:
+    host: 0.0.0.0
 
 external:
   # Railway PostgreSQL connection string, for example postgres://user:password@host:port/db
-  postgresUrl: ""
+  postgresUrl: "postgresql://postgres:LZnTIfohYPjuPwlJJniEXlBlvoyElLXv@hayabusa.proxy.rlwy.net:35151/railway"
   # Railway Redis connection string, for example rediss://default:password@host:port
-  redisUrl: "http://localhost"
+  redisUrl: "redis://localhost:6379"
 
 secrets:
-  jwtSecret: ""
+  jwtSecret: "change-me-in-production-min-32-chars!!"
+  axiomToken: "xaat-b4e16740-e5a4-40cc-9fb0-aa3512f4fe0b"
+  axiomDataset: "app-logs"
 
 ingress:
-  enabled: false
+  enabled: true
   className: alb
   annotations:
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/healthcheck-path: /
   hosts:
-    - host: skillgap.abdelrahmanmokhater.me
+    - host: ""
       paths:
         - path: /
           pathType: Prefix

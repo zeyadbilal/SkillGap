@@ -43,6 +43,8 @@ spec:
             - name: http
               containerPort: {{ .Values.model.service.port }}
           env:
+            - name: MODEL_HOST
+              value: {{ .Values.model.env.host | quote }}
             - name: MODEL_PORT
               value: {{ .Values.model.service.port | quote }}
           readinessProbe:
