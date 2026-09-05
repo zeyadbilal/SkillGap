@@ -3,9 +3,9 @@ import os
 from flask import Flask, jsonify, request
 
 try:
-    from .engine import analyze_cv
+    from .engine import CvAnalysisError, analyze_cv
 except ImportError:  # Allows `python app.py` from model/service.
-    from engine import analyze_cv
+    from engine import CvAnalysisError, analyze_cv
 
 
 def create_app():
@@ -24,6 +24,8 @@ def create_app():
             }), 400
         try:
             return jsonify(analyze_cv(payload)), 200
+        except CvAnalysisError as error:
+            return jsonify({"error": str(error), "errorCode": error.error_code}), 422
         except ValueError as error:
             return jsonify({"error": str(error), "errorCode": "INVALID_CV_TEXT"}), 400
         except Exception:

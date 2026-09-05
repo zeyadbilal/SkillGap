@@ -40,6 +40,10 @@ function getServerErrorMessage(data, status) {
   }
 
   if (status === 422) {
+    if (data?.errorCode === "NO_SKILLS_DETECTED") {
+      return "We couldn't detect any skills in this document. It doesn't look like a resume — please upload your CV.";
+    }
+
     if (backendMessage.toLowerCase().includes("cv")) {
       return "We couldn't read this CV properly. Please try another PDF, DOCX or TXT file.";
     }
