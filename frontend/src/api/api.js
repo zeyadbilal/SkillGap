@@ -1,28 +1,224 @@
 const API_URL = import.meta.env.VITE_API_URL || "/api";
-async function request(endpoint, options = {}) {
-  const response = await fetch(`${API_URL}${endpoint}`, {
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...(options.headers || {}),
-    },
-  });
 
-  const data = await response.json();
+/* ======================================================
+   FRIENDLY ERROR HANDLING
+====================================================== */
+
+function createFriendlyError(message, status = null) {
+  const error = new Error(message);
+
+  error.status = status;
+  error.isFriendly = true;
+
+  return error;
+}
+
+function getServerErrorMessage(data, status) {
+  const backendMessage =
+    data?.error?.message ||
+    data?.message ||
+    (typeof data?.error === "string" ? data.error : "");
+
+  /* ================= AUTH ERRORS ================= */
+
+  if (status === 401) {
+    return "Your session has expired or your login details are incorrect. Please log in again.";
+  }
+
+  if (status === 403) {
+    return "You do not have permission to perform this action.";
+  }
+
+  /* ================= FILE ERRORS ================= */
+
+  if (status === 413) {
+    return "The selected file is too large. Please upload a file smaller than 10 MB.";
+  }
+
+  if (status === 415) {
+    return "This file type is not supported. Please upload a PDF, DOCX or TXT file.";
+  }
+
+  if (status === 422) {
+    if (backendMessage.toLowerCase().includes("cv")) {
+      return "We couldn't read this CV properly. Please try another PDF, DOCX or TXT file.";
+    }
+
+    return (
+      backendMessage ||
+      "Some of the information provided could not be processed. Please check it and try again."
+    );
+  }
+
+  /* ================= SERVER ERRORS ================= */
+
+  if (status === 500) {
+    return "Something went wrong on our server. Please try again shortly.";
+  }
+
+  if (status === 502) {
+    return "One of our services is temporarily unavailable. Please try again shortly.";
+  }
+
+  if (status === 503) {
+    return "The service is temporarily unavailable. Please try again shortly.";
+  }
+
+  if (status === 504) {
+    return "The request took too long to complete. Please try again.";
+  }
+
+  /* ================= OTHER BACKEND ERRORS ================= */
+
+  if (backendMessage) {
+    const lowerMessage = backendMessage.toLowerCase();
+
+    if (
+      lowerMessage.includes("invalid credentials") ||
+      lowerMessage.includes("incorrect password")
+    ) {
+      return "The email or password you entered is incorrect.";
+    }
+
+    if (
+      lowerMessage.includes("already exists") ||
+      lowerMessage.includes("email already")
+    ) {
+      return "An account with this email already exists.";
+    }
+
+    if (lowerMessage.includes("not found")) {
+      return "We couldn't find what you were looking for.";
+    }
+
+    if (lowerMessage.includes("file too large")) {
+      return "The selected file is too large. Please upload a file smaller than 10 MB.";
+    }
+
+    if (
+      lowerMessage.includes("unsupported file") ||
+      lowerMessage.includes("invalid file type")
+    ) {
+      return "This file type is not supported. Please upload a PDF, DOCX or TXT file.";
+    }
+
+    if (
+      lowerMessage.includes("could not be parsed") ||
+      lowerMessage.includes("no readable text")
+    ) {
+      return "We couldn't read this CV properly. Please try another PDF, DOCX or TXT file.";
+    }
+
+    /*
+      Safe backend validation messages can still
+      be shown to the user.
+    */
+
+    if (status >= 400 && status < 500) {
+      return backendMessage;
+    }
+  }
+
+  return "Something went wrong. Please try again.";
+}
+
+/* ======================================================
+   MAIN REQUEST FUNCTION
+====================================================== */
+
+async function request(endpoint, options = {}) {
+  const token = localStorage.getItem("accessToken");
+
+  const isFormData = options.body instanceof FormData;
+
+  let response;
+
+  try {
+    response = await fetch(`${API_URL}${endpoint}`, {
+      ...options,
+
+      headers: {
+        ...(isFormData
+          ? {}
+          : {
+              "Content-Type": "application/json",
+            }),
+
+        ...(token
+          ? {
+              Authorization: `Bearer ${token}`,
+            }
+          : {}),
+
+        ...(options.headers || {}),
+      },
+    });
+  } catch (error) {
+    console.error("Network request failed:", error);
+
+    throw createFriendlyError(
+      "We couldn't connect to the server. Please try again in a moment.",
+    );
+  }
+
+  /* ======================================================
+     SAFELY READ RESPONSE
+  ====================================================== */
+
+  let data = null;
+
+  const contentType = response.headers.get("content-type");
+
+  try {
+    if (contentType?.includes("application/json")) {
+      data = await response.json();
+    } else {
+      const text = await response.text();
+
+      data = text
+        ? {
+            message: text,
+          }
+        : null;
+    }
+  } catch (error) {
+    console.error("Could not read server response:", error);
+
+    if (!response.ok) {
+      throw createFriendlyError(
+        "The server could not complete your request. Please try again.",
+        response.status,
+      );
+    }
+
+    throw createFriendlyError(
+      "We received an unexpected response from the server. Please try again.",
+      response.status,
+    );
+  }
+
+  /* ======================================================
+     HANDLE UNSUCCESSFUL RESPONSES
+  ====================================================== */
 
   if (!response.ok) {
-    throw new Error(
-      data.error?.message || data.error || "Something went wrong",
-    );
+    const friendlyMessage = getServerErrorMessage(data, response.status);
+
+    throw createFriendlyError(friendlyMessage, response.status);
   }
 
   return data;
 }
 
+/* ======================================================
+   AUTH
+====================================================== */
+
 // Register
 export const registerUser = (userData) => {
   return request("/auth/register", {
     method: "POST",
+
     body: JSON.stringify(userData),
   });
 };
@@ -31,43 +227,109 @@ export const registerUser = (userData) => {
 export const loginUser = (userData) => {
   return request("/auth/login", {
     method: "POST",
+
     body: JSON.stringify(userData),
   });
 };
 
 // Get current user
 export const getCurrentUser = () => {
-  const token = localStorage.getItem("accessToken");
-
-  return request("/auth/me", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  return request("/auth/me");
 };
 
-// Refresh token
+/* ======================================================
+   REFRESH TOKEN
+====================================================== */
+
 export const refreshAccessToken = async () => {
   const refreshToken = localStorage.getItem("refreshToken");
 
+  if (!refreshToken) {
+    throw createFriendlyError(
+      "Your session has expired. Please log in again.",
+      401,
+    );
+  }
+
   const data = await request("/auth/refresh", {
     method: "POST",
-    body: JSON.stringify({ refreshToken }),
+
+    body: JSON.stringify({
+      refreshToken,
+    }),
   });
 
-  localStorage.setItem("accessToken", data.data.tokens.accessToken);
-  localStorage.setItem("refreshToken", data.data.tokens.refreshToken);
+  /*
+      Support either of these backend response shapes:
+
+      data.data.tokens.accessToken
+
+      OR
+
+      data.data.accessToken
+    */
+
+  const newAccessToken =
+    data?.data?.tokens?.accessToken || data?.data?.accessToken;
+
+  const newRefreshToken =
+    data?.data?.tokens?.refreshToken || data?.data?.refreshToken;
+
+  if (!newAccessToken) {
+    throw createFriendlyError(
+      "Your session could not be refreshed. Please log in again.",
+      401,
+    );
+  }
+
+  localStorage.setItem("accessToken", newAccessToken);
+
+  if (newRefreshToken) {
+    localStorage.setItem("refreshToken", newRefreshToken);
+  }
 
   return data;
 };
-// Logout
+
+/* ======================================================
+   LOGOUT
+====================================================== */
+
 export const logoutUser = () => {
   const refreshToken = localStorage.getItem("refreshToken");
 
   return request("/auth/logout", {
     method: "POST",
+
     body: JSON.stringify({
       refreshToken,
+    }),
+  });
+};
+
+/* ======================================================
+   CV ANALYSIS
+====================================================== */
+
+// Analyze CV file
+export const analyzeCv = (file) => {
+  const formData = new FormData();
+
+  formData.append("file", file);
+
+  return request("/recommendations/analyze", {
+    method: "POST",
+    body: formData,
+  });
+};
+
+// Analyze pasted CV text
+export const analyzeCvText = (cvText) => {
+  return request("/recommendations/analyze", {
+    method: "POST",
+
+    body: JSON.stringify({
+      cvText,
     }),
   });
 };

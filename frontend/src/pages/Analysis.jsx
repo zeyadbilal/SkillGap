@@ -1,30 +1,231 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { analyzeCv } from "../api/api";
 
 function Analysis() {
   const [file, setFile] = useState(null);
   const [analyzing, setAnalyzing] = useState(false);
   const [analyzed, setAnalyzed] = useState(false);
+  const [analysisResult, setAnalysisResult] = useState(null);
+  const [error, setError] = useState("");
+
+  /* ================= USER-SPECIFIC STORAGE ================= */
+
+  const getAnalysisStorageKey = () => {
+    try {
+      const storedUser = localStorage.getItem("user");
+
+      if (!storedUser) {
+        return null;
+      }
+
+      const user = JSON.parse(storedUser);
+
+      const identifier = user?.id || user?.email;
+
+      if (!identifier) {
+        return null;
+      }
+
+      return `latestAnalysis_${identifier}`;
+    } catch {
+      return null;
+    }
+  };
+
+  /* ================= RESTORE SAVED ANALYSIS ================= */
+
+  useEffect(() => {
+    const storageKey = getAnalysisStorageKey();
+
+    if (!storageKey) {
+      return;
+    }
+
+    try {
+      const savedAnalysis = localStorage.getItem(storageKey);
+
+      if (savedAnalysis) {
+        const parsedAnalysis = JSON.parse(savedAnalysis);
+
+        setAnalysisResult(parsedAnalysis);
+        setAnalyzed(true);
+      }
+    } catch (err) {
+      console.error("Could not restore saved analysis:", err);
+    }
+
+    // Remove old global analysis storage from the previous version
+    localStorage.removeItem("latestAnalysis");
+  }, []);
+
+  /* ================= RESULT DATA ================= */
+
+  const matchScore = analysisResult?.profileSummary?.matchScore ?? 0;
+
+  const detectedSkills = analysisResult?.profileSummary?.detectedSkills ?? 0;
+
+  const missingSkills = analysisResult?.profileSummary?.missingSkills ?? 0;
+
+  const currentSkills = analysisResult?.currentSkills ?? [];
+
+  const skillGaps = analysisResult?.skillGaps ?? [];
+
+  const learningRoadmap = analysisResult?.learningRoadmap ?? [];
+
+  /* ================= FORMAT SKILL NAMES ================= */
+
+  const formatSkillName = (skill) => {
+    if (!skill) return "";
+
+    const specialCases = {
+      "node.js": "Node.js",
+      javascript: "JavaScript",
+      html: "HTML",
+      css: "CSS",
+      sql: "SQL",
+      python: "Python",
+      java: "Java",
+      react: "React",
+      docker: "Docker",
+      git: "Git",
+      linux: "Linux",
+      aws: "AWS",
+      github: "GitHub",
+      "machine learning": "Machine Learning",
+      "rest api": "REST API",
+      "rest apis": "REST APIs",
+      "c++": "C++",
+      llm: "LLM",
+      pytorch: "PyTorch",
+    };
+
+    return (
+      specialCases[skill.toLowerCase()] ||
+      skill.charAt(0).toUpperCase() + skill.slice(1)
+    );
+  };
+
+  /* ================= FRIENDLY ERRORS ================= */
+
+  const getFriendlyErrorMessage = (err) => {
+    const message = err?.message?.toLowerCase() || "";
+
+    if (
+      message.includes("failed to fetch") ||
+      message.includes("networkerror") ||
+      message.includes("network error") ||
+      message.includes("load failed")
+    ) {
+      return "We couldn't connect to the server. Please make sure the service is running and try again.";
+    }
+
+    if (
+      message.includes("unauthorized") ||
+      message.includes("invalid token") ||
+      message.includes("token expired") ||
+      message.includes("authentication")
+    ) {
+      return "Your session has expired. Please log in again.";
+    }
+
+    if (message.includes("file too large") || message.includes("10mb")) {
+      return "Your CV is too large. Please upload a file smaller than 10 MB.";
+    }
+
+    if (
+      message.includes("invalid file") ||
+      message.includes("unsupported file") ||
+      message.includes("file type")
+    ) {
+      return "This file type is not supported. Please upload a PDF, DOCX or TXT file.";
+    }
+
+    if (
+      message.includes("could not be parsed") ||
+      message.includes("parse") ||
+      message.includes("no readable text")
+    ) {
+      return "We couldn't read the text in this CV. Please try another PDF, DOCX or TXT file.";
+    }
+
+    if (
+      message.includes("model") ||
+      message.includes("analysis service") ||
+      message.includes("503")
+    ) {
+      return "The CV analysis service is temporarily unavailable. Please try again shortly.";
+    }
+
+    return "We couldn't analyze your CV right now. Please try again.";
+  };
+
+  /* ================= FILE SELECTION ================= */
 
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
 
     if (selectedFile) {
       setFile(selectedFile);
+
+      // Show the upload screen for the newly selected CV.
+      // The previous successful result remains safely stored
+      // until the new analysis succeeds.
       setAnalyzed(false);
+      setAnalysisResult(null);
+      setError("");
     }
   };
 
-  const handleAnalyze = () => {
-    if (!file) return;
+  /* ================= ANALYZE ================= */
+
+  const handleAnalyze = async () => {
+    if (!file) {
+      setError("Please choose a CV before starting the analysis.");
+      return;
+    }
 
     setAnalyzing(true);
+    setError("");
 
-    // Temporary simulation of AI processing
-    setTimeout(() => {
-      setAnalyzing(false);
+    try {
+      const response = await analyzeCv(file);
+
+      console.log("CV analysis response:", response);
+
+      const result = response?.data;
+
+      if (!result) {
+        throw new Error("No analysis result was returned");
+      }
+
+      setAnalysisResult(result);
       setAnalyzed(true);
-    }, 2000);
+
+      const storageKey = getAnalysisStorageKey();
+
+      if (storageKey) {
+        localStorage.setItem(storageKey, JSON.stringify(result));
+      }
+
+      // Remove the old shared storage key
+      localStorage.removeItem("latestAnalysis");
+    } catch (err) {
+      console.error("CV analysis failed:", err);
+
+      setError(getFriendlyErrorMessage(err));
+    } finally {
+      setAnalyzing(false);
+    }
+  };
+
+  /* ================= ANALYZE ANOTHER CV ================= */
+
+  const handleReset = () => {
+    setFile(null);
+    setAnalyzed(false);
+    setAnalysisResult(null);
+    setError("");
   };
 
   return (
@@ -63,8 +264,8 @@ function Analysis() {
               <h2 className="text-3xl font-black mt-6">UPLOAD YOUR CV</h2>
 
               <p className="text-slate-500 max-w-md mt-3">
-                Upload a PDF or DOCX file. We'll analyze your skills and compare
-                them with current market demand.
+                Upload a PDF, DOCX or TXT file. We'll analyze your skills and
+                compare them with current market demand.
               </p>
 
               {/* File input */}
@@ -72,7 +273,7 @@ function Analysis() {
               <label className="mt-8 w-full max-w-xl border-2 border-dashed border-slate-300 rounded-2xl p-10 cursor-pointer hover:border-blue-500 hover:bg-blue-50/30 transition">
                 <input
                   type="file"
-                  accept=".pdf,.doc,.docx"
+                  accept=".pdf,.docx,.txt"
                   onChange={handleFileChange}
                   className="hidden"
                 />
@@ -86,7 +287,7 @@ function Analysis() {
                     </p>
 
                     <p className="text-xs text-slate-400 mt-5">
-                      PDF, DOC, DOCX
+                      PDF, DOCX, TXT · Max 10 MB
                     </p>
                   </div>
                 ) : (
@@ -112,6 +313,16 @@ function Analysis() {
                 {analyzing ? "Analyzing your CV..." : "Analyze My CV →"}
               </button>
 
+              {/* Friendly error */}
+
+              {error && (
+                <div className="mt-6 w-full max-w-xl bg-red-50 border border-red-200 text-red-700 px-5 py-4 rounded-xl">
+                  <p className="font-bold">We couldn't complete the analysis</p>
+
+                  <p className="text-sm mt-1">{error}</p>
+                </div>
+              )}
+
               {analyzing && (
                 <div className="mt-8 w-full max-w-md">
                   <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
@@ -130,7 +341,7 @@ function Analysis() {
 
       {/* ================= RESULTS ================= */}
 
-      {analyzed && (
+      {analyzed && analysisResult && (
         <section className="max-w-7xl mx-auto px-6 py-20">
           {/* Result header */}
 
@@ -148,17 +359,14 @@ function Analysis() {
             </div>
 
             <button
-              onClick={() => {
-                setFile(null);
-                setAnalyzed(false);
-              }}
+              onClick={handleReset}
               className="border border-slate-300 bg-white px-5 py-3 rounded-full font-semibold hover:bg-slate-50"
             >
               Analyze another CV
             </button>
           </div>
 
-          {/* Match score */}
+          {/* ================= MATCH SCORE ================= */}
 
           <div className="grid lg:grid-cols-3 gap-6 mt-12">
             <div className="lg:col-span-2 bg-[#111111] text-white rounded-[2rem] p-8 md:p-10">
@@ -168,7 +376,7 @@ function Analysis() {
 
               <div className="flex items-end gap-3 mt-8">
                 <span className="text-8xl font-black tracking-[-0.07em]">
-                  68
+                  {matchScore}
                 </span>
 
                 <span className="text-3xl text-slate-500 font-bold mb-4">
@@ -176,8 +384,13 @@ function Analysis() {
                 </span>
               </div>
 
-              <div className="h-4 bg-white/10 rounded-full mt-8">
-                <div className="h-4 bg-blue-500 rounded-full w-[68%]" />
+              <div className="h-4 bg-white/10 rounded-full mt-8 overflow-hidden">
+                <div
+                  className="h-4 bg-blue-500 rounded-full"
+                  style={{
+                    width: `${Math.min(Math.max(matchScore, 0), 100)}%`,
+                  }}
+                />
               </div>
 
               <div className="flex justify-between text-sm text-slate-500 mt-3">
@@ -188,8 +401,9 @@ function Analysis() {
 
               <div className="mt-10 pt-8 border-t border-white/10">
                 <p className="text-slate-400">
-                  You have a solid foundation, but improving a few high-demand
-                  skills could significantly increase your market match.
+                  Your profile currently matches {matchScore}% of the reviewed
+                  market skills. Focus on the recommended gaps below to improve
+                  your alignment.
                 </p>
               </div>
             </div>
@@ -202,11 +416,14 @@ function Analysis() {
               </p>
 
               <div className="space-y-7 mt-10">
-                <ResultStat number="12" label="Skills detected" />
+                <ResultStat number={detectedSkills} label="Skills detected" />
 
-                <ResultStat number="07" label="Strong skills" />
+                <ResultStat
+                  number={currentSkills.length}
+                  label="Current skills"
+                />
 
-                <ResultStat number="05" label="Skill gaps" />
+                <ResultStat number={missingSkills} label="Skill gaps" />
               </div>
             </div>
           </div>
@@ -224,31 +441,22 @@ function Analysis() {
               <h3 className="text-3xl font-black mt-3">YOUR SKILLS</h3>
 
               <div className="flex flex-wrap gap-3 mt-8">
-                {[
-                  "Python",
-                  "JavaScript",
-                  "React",
-                  "HTML",
-                  "CSS",
-                  "Git",
-                  "C++",
-                  "Java",
-                  "Machine Learning",
-                  "REST APIs",
-                  "Linux",
-                  "GitHub",
-                ].map((skill) => (
-                  <span
-                    key={skill}
-                    className="bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-medium"
-                  >
-                    {skill}
-                  </span>
-                ))}
+                {currentSkills.length > 0 ? (
+                  currentSkills.map((item) => (
+                    <span
+                      key={item.skill}
+                      className="bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-medium"
+                    >
+                      {formatSkillName(item.skill)}
+                    </span>
+                  ))
+                ) : (
+                  <p className="text-slate-400">No skills were detected.</p>
+                )}
               </div>
             </div>
 
-            {/* Missing skills */}
+            {/* Skill gaps */}
 
             <div className="bg-white rounded-[2rem] border border-slate-200 p-8">
               <p className="text-xs uppercase tracking-widest text-slate-400 font-bold">
@@ -258,15 +466,33 @@ function Analysis() {
               <h3 className="text-3xl font-black mt-3">SKILL GAPS</h3>
 
               <div className="space-y-4 mt-8">
-                <GapRow skill="SQL" demand="71%" priority="HIGH" />
+                {skillGaps.length > 0 ? (
+                  skillGaps.slice(0, 5).map((gap, index) => {
+                    const demandPercent = Math.round(
+                      (gap.demandScore ?? 0) * 100,
+                    );
 
-                <GapRow skill="Docker" demand="58%" priority="HIGH" />
+                    const priorityLabel =
+                      gap.priority >= 8
+                        ? "HIGH"
+                        : gap.priority >= 5
+                          ? "MEDIUM"
+                          : "LOW";
 
-                <GapRow skill="AWS" demand="52%" priority="MEDIUM" />
-
-                <GapRow skill="System Design" demand="41%" priority="MEDIUM" />
-
-                <GapRow skill="CI/CD" demand="35%" priority="LOW" />
+                    return (
+                      <GapRow
+                        key={gap.skill || index}
+                        skill={formatSkillName(gap.skill)}
+                        demand={`${demandPercent}%`}
+                        priority={priorityLabel}
+                        reason={gap.reason}
+                        track={gap.track}
+                      />
+                    );
+                  })
+                ) : (
+                  <p className="text-slate-400">No skill gaps were returned.</p>
+                )}
               </div>
             </div>
           </div>
@@ -285,31 +511,26 @@ function Analysis() {
             </h2>
 
             <p className="max-w-xl mt-6 text-slate-700">
-              Based on your current profile and market demand, these skills
-              should be your next priorities.
+              Based on your current profile and market demand, these learning
+              stages should be your next priorities.
             </p>
 
             <div className="space-y-4 mt-12">
-              <RoadmapRow
-                number="01"
-                skill="SQL"
-                reason="High demand across software and data roles"
-                priority="HIGH PRIORITY"
-              />
-
-              <RoadmapRow
-                number="02"
-                skill="Docker"
-                reason="Common requirement for modern development teams"
-                priority="HIGH PRIORITY"
-              />
-
-              <RoadmapRow
-                number="03"
-                skill="AWS"
-                reason="Growing demand for cloud engineering"
-                priority="MEDIUM PRIORITY"
-              />
+              {learningRoadmap.length > 0 ? (
+                learningRoadmap.map((item, index) => (
+                  <RoadmapRow
+                    key={item.month || index}
+                    number={String(index + 1).padStart(2, "0")}
+                    skill={item.title}
+                    reason={`${item.estimatedHours} estimated hours · ${item.hoursPerWeek} hours/week`}
+                    priority={`MONTH ${item.month}`}
+                  />
+                ))
+              ) : (
+                <p className="text-slate-700">
+                  No roadmap was returned for this CV.
+                </p>
+              )}
             </div>
           </section>
 
@@ -355,31 +576,43 @@ function ResultStat({ number, label }) {
   );
 }
 
-function GapRow({ skill, demand, priority }) {
+function GapRow({ skill, demand, priority, reason, track }) {
   return (
-    <div className="flex items-center gap-4 border-b border-slate-100 pb-4">
-      <div className="w-12 h-12 bg-orange-100 text-orange-600 rounded-xl flex items-center justify-center font-black">
-        !
-      </div>
-
-      <div className="flex-1">
-        <div className="flex justify-between">
-          <p className="font-bold">{skill}</p>
-
-          <span className="text-sm text-slate-400">{demand} demand</span>
+    <div className="border-b border-slate-100 pb-5">
+      <div className="flex items-start gap-4">
+        <div className="w-12 h-12 bg-orange-100 text-orange-600 rounded-xl flex items-center justify-center font-black shrink-0">
+          !
         </div>
 
-        <div className="h-2 bg-slate-100 rounded-full mt-2">
-          <div
-            className="h-2 bg-orange-400 rounded-full"
-            style={{ width: demand }}
-          />
-        </div>
-      </div>
+        <div className="flex-1">
+          <div className="flex justify-between gap-4">
+            <div>
+              <p className="font-bold">{skill}</p>
 
-      <span className="text-[10px] font-black whitespace-nowrap">
-        {priority}
-      </span>
+              {track && <p className="text-xs text-slate-400 mt-1">{track}</p>}
+            </div>
+
+            <span className="text-sm text-slate-400 whitespace-nowrap">
+              {demand} demand
+            </span>
+          </div>
+
+          <div className="h-2 bg-slate-100 rounded-full mt-3">
+            <div
+              className="h-2 bg-orange-400 rounded-full"
+              style={{
+                width: demand,
+              }}
+            />
+          </div>
+
+          {reason && <p className="text-sm text-slate-500 mt-3">{reason}</p>}
+        </div>
+
+        <span className="text-[10px] font-black whitespace-nowrap">
+          {priority}
+        </span>
+      </div>
     </div>
   );
 }

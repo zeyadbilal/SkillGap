@@ -18,6 +18,20 @@ function Register() {
     event.preventDefault();
 
     setError("");
+
+    // Password validation
+    const hasUppercase = /[A-Z]/.test(password);
+    const hasLowercase = /[a-z]/.test(password);
+    const hasNumber = /[0-9]/.test(password);
+    const hasMinimumLength = password.length >= 8;
+
+    if (!hasMinimumLength || !hasUppercase || !hasLowercase || !hasNumber) {
+      setError(
+        "Password must be at least 8 characters and include an uppercase letter, a lowercase letter, and a number.",
+      );
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -33,11 +47,9 @@ function Register() {
 
       const { accessToken, refreshToken } = response.data.tokens;
 
-      // Store authentication tokens
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
 
-      // Store user information
       localStorage.setItem("user", JSON.stringify(response.data.user));
 
       navigate("/dashboard");
