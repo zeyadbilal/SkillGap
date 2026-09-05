@@ -46,6 +46,15 @@ async function getHistoryDetail(req, res, next) {
       },
     });
   } catch (error) {
+    const invalidIdSyntax = error.name === 'SequelizeDatabaseError';
+
+    if (invalidIdSyntax) {
+      const notFound = new Error('Analysis not found');
+      notFound.statusCode = 404;
+      notFound.errorCode = 'NOT_FOUND';
+      return next(notFound);
+    }
+
     return next(error);
   }
 }
