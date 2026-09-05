@@ -1,6 +1,4 @@
-import json
 import unittest
-from pathlib import Path
 from unittest.mock import patch
 
 from model.service import engine
@@ -8,26 +6,19 @@ from model.service import engine
 
 class EngineParityTests(unittest.TestCase):
     def setUp(self):
-        # The frozen fixture was captured with the legacy Python extractor
-        # available but with no matching skills in the input.
         engine._nlp_loaded = True
         engine._nlp = None
 
-    def test_no_skill_fixture_preserves_legacy_ranking(self):
-        fixture_path = Path(__file__).parent / "fixtures" / "legacy_no_skills.json"
-        fixture = json.loads(fixture_path.read_text(encoding="utf-8"))
+    def test_document_with_no_detected_skills_is_rejected(self):
+        cv_text = (
+            "Experienced professional focused on communication, planning, mentoring, "
+            "documentation, and stakeholder coordination across several organizations."
+        )
 
-        actual = engine.analyze_cv(fixture["input"])
-        actual.pop("generatedAt")
+        with self.assertRaises(engine.CvAnalysisError) as context:
+            engine.analyze_cv({"cvText": cv_text})
 
-        expected = fixture["output"]
-        self.assertEqual(actual["profileSummary"]["track"], expected["profileSummary"]["track"])
-        self.assertEqual(actual["profileSummary"]["bestSkills"], expected["profileSummary"]["bestSkills"])
-        self.assertEqual(actual["skillGaps"][:5], expected["skillGaps"])
-        self.assertEqual(actual["usefulStuff"], expected["usefulStuff"])
-        self.assertEqual(actual["pipeline"], expected["pipeline"])
-        self.assertEqual(actual["profileSummary"]["marketSkillsReviewed"], 12)
-        self.assertEqual(len(actual["learningRoadmap"]), 3)
+        self.assertEqual(context.exception.error_code, "NO_SKILLS_DETECTED")
 
     def test_uses_fixed_analysis_limits(self):
         result = engine.analyze_cv(

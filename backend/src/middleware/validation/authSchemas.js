@@ -1,14 +1,14 @@
 const Joi = require("joi");
 
 const fieldsOfStudy = [
-  "Software Development",
-  "Data Science & Analytics",
-  "DevOps & Cloud Infrastructure",
-  "Product Management",
-  "UI/UX Design",
-  "Business Analysis",
-  "Cybersecurity",
+  "Backend Development",
+  "Frontend Development",
+  "Full-Stack Development",
   "Mobile Development",
+  "DevOps & Cloud Engineering",
+  "Network Administration",
+  "Network Security",
+  "Machine Learning / AI",
 ];
 
 const registerSchema = Joi.object({
