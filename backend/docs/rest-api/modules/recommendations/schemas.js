@@ -155,6 +155,68 @@ const recommendationsSchemas = {
       },
     },
   },
+
+  AnalysisHistoryListItem: {
+    type: 'object',
+    description: 'Summary of one stored analysis, used by the history list. The full result payload is omitted.',
+    properties: {
+      id: { type: 'string', format: 'uuid', example: '2f6e60d8-9f5c-4f5b-8c1a-000000000001' },
+      track: { type: 'string', nullable: true, example: 'Machine Learning / AI' },
+      source: {
+        type: 'string',
+        enum: ['file', 'text'],
+        example: 'file',
+      },
+      matchScore: { type: 'integer', nullable: true, minimum: 0, maximum: 100, example: 68 },
+      detectedSkills: { type: 'integer', nullable: true, example: 12 },
+      missingSkills: { type: 'integer', nullable: true, example: 5 },
+      createdAt: {
+        type: 'string',
+        format: 'date-time',
+        example: '2026-09-05T10:00:00.000Z',
+      },
+    },
+  },
+
+  HistoryListResponse: {
+    type: 'object',
+    description: 'List of previous analyses for the authenticated user.',
+    required: ['success', 'data'],
+    properties: {
+      success: { type: 'boolean', example: true },
+      data: {
+        type: 'array',
+        items: { $ref: '#/components/schemas/AnalysisHistoryListItem' },
+      },
+    },
+  },
+
+  HistoryDetailResponse: {
+    type: 'object',
+    description: 'Full stored analysis for one previous CV analysis.',
+    required: ['success', 'data'],
+    properties: {
+      success: { type: 'boolean', example: true },
+      data: {
+        type: 'object',
+        properties: {
+          id: { type: 'string', format: 'uuid', example: '2f6e60d8-9f5c-4f5b-8c1a-000000000001' },
+          track: { type: 'string', nullable: true, example: 'Machine Learning / AI' },
+          source: {
+            type: 'string',
+            enum: ['file', 'text'],
+            example: 'file',
+          },
+          result: { type: 'object', additionalProperties: true },
+          createdAt: {
+            type: 'string',
+            format: 'date-time',
+            example: '2026-09-05T10:00:00.000Z',
+          },
+        },
+      },
+    },
+  },
 };
 
 module.exports = { recommendationsSchemas };
