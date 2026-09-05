@@ -26,6 +26,20 @@ class ModelServiceHttpTests(unittest.TestCase):
         self.assertEqual(result["profileSummary"]["marketSkillsReviewed"], 12)
         self.assertLessEqual(len(result["learningRoadmap"]), 3)
 
+    def test_analyze_rejects_document_without_skills(self):
+        response = self.client.post(
+            "/analyze",
+            json={
+                "cvText": (
+                    "Experienced professional focused on communication, planning, "
+                    "mentoring, documentation, and stakeholder coordination."
+                ),
+            },
+        )
+
+        self.assertEqual(response.status_code, 422)
+        self.assertEqual(response.get_json()["errorCode"], "NO_SKILLS_DETECTED")
+
     def test_analyze_rejects_removed_options(self):
         response = self.client.post(
             "/analyze",

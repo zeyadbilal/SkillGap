@@ -9,7 +9,7 @@ const newUser = (overrides = {}) => ({
   email: `${randomUUID()}@example.com`,
   password: 'Password1',
   fullName: 'Test User',
-  fieldOfStudy: 'Software Development',
+  fieldOfStudy: 'Full-Stack Development',
   graduationYear: 2026,
   ...overrides,
 });
