@@ -6,7 +6,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
-import Jobs from "./pages/Jobs";
+import Market from "./pages/Market";
 import Analysis from "./pages/Analysis";
 
 function isAuthenticated() {
@@ -80,10 +80,10 @@ function App() {
         />
 
         <Route
-          path="/jobs"
+          path="/market"
           element={
             <ProtectedRoute>
-              <Jobs />
+              <Market />
             </ProtectedRoute>
           }
         />

@@ -529,7 +529,7 @@ function Analysis() {
               </div>
 
               <Link
-                to="/jobs"
+                to="/market"
                 className="bg-white text-black px-7 py-4 rounded-full font-bold hover:bg-slate-200 transition"
               >
                 Explore Job Market →

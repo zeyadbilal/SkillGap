@@ -86,8 +86,8 @@ function Navbar() {
                 Analysis
               </Link>
 
-              <Link to="/jobs" className={getLinkClass("/jobs")}>
-                Jobs
+              <Link to="/market" className={getLinkClass("/market")}>
+                Market
               </Link>
             </>
           )}

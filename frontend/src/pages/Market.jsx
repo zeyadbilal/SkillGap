@@ -1,9 +1,6 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
 
-function Jobs() {
-  const [search, setSearch] = useState("");
-
+function Market() {
   /* ======================================================
      LOAD LATEST ANALYSIS
   ====================================================== */
@@ -99,10 +96,6 @@ function Jobs() {
   /* ======================================================
      MARKET SKILLS
   ====================================================== */
-
-  const filteredMarketSkills = topMarketSkills.filter((item) =>
-    item.skill?.toLowerCase().includes(search.toLowerCase()),
-  );
 
   const highestMarketCount =
     topMarketSkills.length > 0
@@ -253,27 +246,6 @@ function Jobs() {
               </div>
             </div>
 
-            {/* ================= SEARCH ================= */}
-
-            <div className="bg-white rounded-[2rem] border border-slate-200 p-6 md:p-8 mt-16">
-              <div className="flex flex-col md:flex-row gap-4">
-                <input
-                  type="text"
-                  placeholder="Search market skills..."
-                  value={search}
-                  onChange={(event) => setSearch(event.target.value)}
-                  className="flex-1 px-5 py-4 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500"
-                />
-
-                <button
-                  onClick={() => setSearch("")}
-                  className="px-6 py-4 border border-slate-300 rounded-xl font-semibold hover:bg-slate-50"
-                >
-                  Reset
-                </button>
-              </div>
-            </div>
-
             {/* ================= SKILLS IN DEMAND ================= */}
 
             <div className="mt-16">
@@ -293,9 +265,9 @@ function Jobs() {
                 </span>
               </div>
 
-              {filteredMarketSkills.length > 0 ? (
+              {topMarketSkills.length > 0 ? (
                 <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
-                  {filteredMarketSkills.map((item, index) => {
+                  {topMarketSkills.map((item, index) => {
                     const count = Number(item.count ?? 0);
 
                     const demandPercent =
@@ -378,42 +350,6 @@ function Jobs() {
                     </p>
                   </div>
                 )}
-              </div>
-            </div>
-
-            {/* ================= LIVE JOB LISTINGS ================= */}
-
-            <div className="mt-20">
-              <p className="text-blue-600 text-xs uppercase tracking-widest font-bold">
-                Opportunities
-              </p>
-
-              <h2 className="text-4xl md:text-5xl font-black tracking-[-0.04em] mt-3">
-                LIVE JOBS.
-              </h2>
-
-              <div className="bg-white rounded-[2rem] border border-slate-200 p-8 md:p-12 mt-8">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
-                  <div>
-                    <h3 className="text-2xl font-black">
-                      Job listings are not connected yet.
-                    </h3>
-
-                    <p className="text-slate-500 max-w-2xl mt-3 leading-relaxed">
-                      Your market-skill data is working, but the backend does
-                      not currently provide an endpoint for individual job
-                      listings. This section will display real jobs once that
-                      API is connected.
-                    </p>
-                  </div>
-
-                  <Link
-                    to="/analysis"
-                    className="bg-black text-white px-6 py-3 rounded-full font-bold whitespace-nowrap hover:bg-slate-800 transition"
-                  >
-                    View My Analysis →
-                  </Link>
-                </div>
               </div>
             </div>
           </>
@@ -552,4 +488,4 @@ function GapCard({ gap, formatSkillName }) {
   );
 }
 
-export default Jobs;
+export default Market;
