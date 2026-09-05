@@ -171,7 +171,7 @@ describe('Recommendations API', () => {
       .attach('file', Buffer.from('   \n\t  '), 'resume.txt')
       .expect(422);
 
-    expect(response.body.errorCode).toBe('EMPTY_CV_TEXT');
+    expect(response.body.errorCode).toBe('CV_TEXT_EMPTY');
     expect(mockAnalyzeModel).not.toHaveBeenCalled();
     await waitForCleanup(before);
     expect(tempUploads().filter((name) => !before.has(name))).toEqual([]);
